@@ -43,6 +43,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         })->name('admin.dashboard');
         Route::prefix('users')->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('admin.users.index');
+            Route::post('/', [UserController::class, 'store'])->name('admin.users.store');
+            Route::put('/{user}', [UserController::class, 'update'])->name('admin.users.update');
+            Route::delete('/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
         });
 
         Route::prefix('post')->group(function () {
