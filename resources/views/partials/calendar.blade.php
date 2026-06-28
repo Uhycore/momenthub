@@ -8,7 +8,6 @@
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
 
 <style>
-    /* ════ SECTION WRAPPER ════════════════════════════════════════════ */
     .gc-wrap {
         background: #fafaf8;
         padding: 80px 0 72px;
@@ -21,7 +20,6 @@
         padding: 0 28px;
     }
 
-    /* ── Hero text ── */
     .gc-hero {
         text-align: center;
         margin-bottom: 52px;
@@ -74,7 +72,6 @@
         margin: 0 auto 28px;
     }
 
-    /* Stats row */
     .gc-stats {
         display: inline-flex;
         gap: 0;
@@ -111,7 +108,6 @@
         margin-top: 2px;
     }
 
-    /* ── Calendar card ── */
     .gc-card {
         background: #fff;
         border-radius: 16px;
@@ -146,6 +142,7 @@
         display: flex;
         gap: 14px;
         align-items: center;
+        flex-wrap: wrap;
     }
 
     .gc-legend-item {
@@ -397,12 +394,24 @@
                 </div>
                 <div class="gc-legend">
                     <div class="gc-legend-item">
+                        <div class="gc-legend-dot" style="background:#b58900;"></div>
+                        Menunggu
+                    </div>
+                    <div class="gc-legend-item">
                         <div class="gc-legend-dot" style="background:#1a6e38;"></div>
                         Dikonfirmasi
                     </div>
                     <div class="gc-legend-item">
-                        <div class="gc-legend-dot" style="background:#b58900;"></div>
-                        Menunggu
+                        <div class="gc-legend-dot" style="background:#1e40af;"></div>
+                        Terlaksana
+                    </div>
+                    <div class="gc-legend-item">
+                        <div class="gc-legend-dot" style="background:#5b21b6;"></div>
+                        Editing
+                    </div>
+                    <div class="gc-legend-item">
+                        <div class="gc-legend-dot" style="background:#166534;"></div>
+                        Selesai
                     </div>
                 </div>
             </div>
@@ -432,35 +441,58 @@
     document.addEventListener('DOMContentLoaded', function() {
         const allEvents = @json($calendarEvents);
 
-        // ── Live stats ──────────────────────────────────────────────────
+        // Peta warna → label warna tooltip
+        const badgeTextColor = {
+            '#1a6e38': '#4ade80', // confirmed → hijau terang
+            '#1e40af': '#93c5fd', // completed → biru terang
+            '#5b21b6': '#c4b5fd', // editing   → ungu terang
+            '#166534': '#6ee7b7', // done      → emerald terang
+            '#b58900': '#fbbf24', // pending   → kuning
+        };
+
+        // ── Live stats ────────────────────────────────────────────────
         const now = new Date();
         let confirmed = 0,
             pending = 0,
             thisMonth = 0;
+
         allEvents.forEach(ev => {
             if (ev.color === '#1a6e38') confirmed++;
             else pending++;
-            const evMonth = new Date(ev.start + 'T00:00:00').getMonth();
-            if (evMonth === now.getMonth()) thisMonth++;
+
+            const evStart = new Date(ev.start);
+            if (evStart.getMonth() === now.getMonth() &&
+                evStart.getFullYear() === now.getFullYear()) {
+                thisMonth++;
+            }
         });
+
         document.getElementById('gc-count-confirmed').textContent = confirmed;
         document.getElementById('gc-count-pending').textContent = pending;
         document.getElementById('gc-count-month').textContent = thisMonth;
 
-        // ── Tooltip ──────────────────────────────────────────────────────
+        // ── Tooltip helpers ───────────────────────────────────────────
         const tip = document.getElementById('gc-tip');
 
-        function fmtDate(dateStr) {
-            if (!dateStr) return '';
-            const d = new Date(dateStr + 'T00:00:00');
-            return d.toLocaleDateString('id-ID', {
+        function fmtDate(dateObj) {
+            if (!dateObj) return '';
+            return dateObj.toLocaleDateString('id-ID', {
                 day: 'numeric',
                 month: 'short',
                 year: 'numeric'
             });
         }
 
-        // ── FullCalendar ─────────────────────────────────────────────────
+        function fmtTime(dateObj) {
+            if (!dateObj) return '';
+            return dateObj.toLocaleTimeString('id-ID', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+        }
+
+        // ── FullCalendar ──────────────────────────────────────────────
         const cal = new FullCalendar.Calendar(document.getElementById('gc-cal'), {
                 initialView: 'dayGridMonth',
                 locale: 'id',
@@ -477,7 +509,6 @@
                 eventDisplay: 'block',
                 dayMaxEvents: 3,
 
-                // Tooltip on hover
                 eventMouseEnter: function(info) {
                     const ev = info.event;
                     const ext = ev.extendedProps;
@@ -488,18 +519,29 @@
                     const badge = document.getElementById('gc-tip-badge');
                     badge.textContent = ext.status ?? '';
                     badge.style.background = ev.backgroundColor + '30';
-                    badge.style.color = ev.backgroundColor === '#1a6e38' ? '#4ade80' : '#fbbf24';
+                    badge.style.color = badgeTextColor[ev.backgroundColor] ?? '#fbbf24';
 
-                    // end exclusive → -1 hari
-                    const endMs = ev.end ? ev.end.getTime() - 86400000 : null;
-                    const endStr = endMs ? new Date(endMs).toISOString().split('T')[0] : null;
-                    const s = fmtDate(ev.start.toISOString().split('T')[0]);
-                    const e = endStr ? fmtDate(endStr) : s;
-                    document.getElementById('gc-tip-date-text').textContent = s === e ? s : s + ' — ' +
-                        e;
+                    // Tanggal + jam
+                    const start = ev.start;
+                    const end = ev.end;
+                    const startDate = fmtDate(start);
+                    const startTime = fmtTime(start);
 
+                    let dateText = '';
+                    if (end) {
+                        const endDate = fmtDate(end);
+                        const endTime = fmtTime(end);
+                        dateText = startDate === endDate ?
+                            `${startDate}, ${startTime} – ${endTime} WIB` :
+                            `${startDate} ${startTime} – ${endDate} ${endTime} WIB`;
+                    } else {
+                        dateText = `${startDate}, ${startTime} WIB`;
+                    }
+
+                    document.getElementById('gc-tip-date-text').textContent = dateText;
                     tip.classList.add('show');
                 },
+
                 eventMouseLeave: function() {
                     tip.classList.remove('show');
                 },

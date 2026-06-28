@@ -200,8 +200,8 @@
                                             viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"
                                                 d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586
-                                                                                                             a2 2 0 012.828 0L20 14M14 8h.01M6 20h12a2 2 0 002-2V6
-                                                                                                             a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                                                                                 a2 2 0 012.828 0L20 14M14 8h.01M6 20h12a2 2 0 002-2V6
+                                                                                                                 a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                         </svg>
                                     </div>
                                 @endif
@@ -440,104 +440,16 @@
         @include('partials.calendar')
         @include('partials.contact')
 
-        {{-- ===================== CTA BANNER ===================== --}}
-        <section class="bg-gray-900 py-24">
-            <div class="max-w-3xl mx-auto px-6 text-center">
-                <h2 class="font-sans text-4xl lg:text-5xl font-black text-white leading-tight mb-5">
-                    Siap Untuk Membuat<br>Kenangan Abadi?
-                </h2>
-                <p class="text-sm text-gray-400 leading-relaxed mb-10 max-w-md mx-auto">
-                    Konsultasikan konsep foto Anda dan dapatkan rekomendasi dengan tim kurator terbaik kami.
-                </p>
-                <div class="flex items-center justify-center gap-4 flex-wrap">
-                    <a href="{{ route('register') }}"
-                        class="bg-yellow-400 text-gray-900 text-[11px] uppercase tracking-widest font-bold px-8 py-3.5 hover:bg-yellow-500 transition-colors">
-                        Mulai Konsultasi
-                    </a>
-                    <a href="#"
-                        class="border border-gray-600 text-white text-[11px] uppercase tracking-widest font-bold px-8 py-3.5 hover:border-white transition-colors">
-                        Hubungi Kami
-                    </a>
-                </div>
-            </div>
-        </section>
 
 
         {{-- ===================== FOOTER ===================== --}}
-        <footer class="bg-gray-900 border-t border-gray-800 pt-16 pb-10">
+        <footer class="bg-gray-900 border-t border-gray-800 pt-5 pb-5">
             <div class="max-w-6xl mx-auto px-6">
 
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-14">
-
-                    {{-- Brand --}}
-                    <div class="col-span-2 md:col-span-1">
-                        <div class="font-bold text-white text-sm mb-4">MomentHub</div>
-                        <p class="text-xs text-gray-500 leading-relaxed max-w-xs mb-6">
-                            Platform kurasi fotografi editorial terpercaya untuk mengabadikan momen terbaik Anda.
-                        </p>
-                        <div class="flex items-center gap-3">
-                            @foreach (['M', 'I', 'T', 'L'] as $icon)
-                                <div
-                                    class="w-7 h-7 border border-gray-700 flex items-center justify-center text-gray-500 hover:border-gray-400 hover:text-white transition-colors cursor-pointer">
-                                    <span class="text-[10px] font-bold">{{ $icon }}</span>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-
-                    {{-- Layanan --}}
-                    <div>
-                        <div class="text-[9px] uppercase tracking-widest font-bold text-gray-500 mb-5">Layanan</div>
-                        <ul class="space-y-3">
-                            @foreach (['Wedding Photography', 'Portofolio Editorial', 'Event & Komersial', 'Konsultasi Kreatif', 'Galeri & Arsip'] as $item)
-                                <li><a href="#"
-                                        class="text-xs text-gray-400 hover:text-white transition-colors">{{ $item }}</a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-
-                    {{-- Perusahaan --}}
-                    <div>
-                        <div class="text-[9px] uppercase tracking-widest font-bold text-gray-500 mb-5">Perusahaan</div>
-                        <ul class="space-y-3">
-                            @foreach (['Tentang Kami', 'Tim Fotografer', 'Cara Kerja', 'Syarat & Ketentuan', 'Kebijakan Privasi'] as $item)
-                                <li><a href="#"
-                                        class="text-xs text-gray-400 hover:text-white transition-colors">{{ $item }}</a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-
-                    {{-- Newsletter --}}
-                    <div>
-                        <div class="text-[9px] uppercase tracking-widest font-bold text-gray-500 mb-5">Newsletter</div>
-                        <p class="text-xs text-gray-500 leading-relaxed mb-4">Dapatkan inspirasi fotografi dan penawaran
-                            eksklusif langsung di inbox Anda.</p>
-                        <div class="flex">
-                            <input type="email" placeholder="Email Anda"
-                                class="flex-1 bg-gray-800 border border-gray-700 text-xs text-white placeholder-gray-600 px-3 py-2.5 outline-none focus:border-gray-500">
-                            <button class="bg-yellow-400 text-gray-900 px-3 py-2.5 hover:bg-yellow-500 transition-colors">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
                     <span class="text-[10px] text-gray-600 uppercase tracking-widest">© 2024 MomentHub. Editorial
                         Photography Curator.</span>
-                    <div class="flex items-center gap-6">
-                        <a href="#"
-                            class="text-[10px] uppercase tracking-widest text-gray-600 hover:text-white transition-colors">Indonesia</a>
-                        <a href="#"
-                            class="text-[10px] uppercase tracking-widest text-gray-600 hover:text-white transition-colors">English</a>
-                    </div>
-                </div>
+                  
+                
 
             </div>
         </footer>

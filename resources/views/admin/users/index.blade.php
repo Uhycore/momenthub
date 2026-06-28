@@ -1,5 +1,8 @@
 @extends('admin.layouts.app')
 
+@section('page-title', 'Manajemen Pengguna')
+@section('page-subtitle', 'Kelola pengguna yang terdaftar dalam sistem')
+
 @section('content')
     {{-- Alpine modal state --}}
     <div x-data="{

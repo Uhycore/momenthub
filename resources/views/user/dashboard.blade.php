@@ -497,123 +497,7 @@
         <p>Pantau status sesi foto, lihat jadwal mendatang, dan kelola pesanan Anda dari sini.</p>
     </div>
 
-    {{-- ── Stats ── --}}
-    <div class="ud-stats">
-        <div class="ud-stat">
-            <div class="ud-stat-lbl">Total Pesanan</div>
-            <div class="ud-stat-val">{{ $totalBookings }}</div>
-            <div class="ud-stat-sub">Sepanjang waktu</div>
-        </div>
-        <div class="ud-stat dark">
-            <div class="ud-stat-lbl">Total Pengeluaran</div>
-            <div class="ud-stat-val" style="font-size:18px;">
-                Rp {{ number_format($totalSpent / 1000, 0, ',', '.') }}K
-            </div>
-            <div class="ud-stat-sub">Semua sesi</div>
-        </div>
-        <div class="ud-stat">
-            <div class="ud-stat-lbl">Sesi Selesai</div>
-            <div class="ud-stat-val">{{ $totalDone }}</div>
-            <div class="ud-stat-sub">Status done</div>
-        </div>
-        <div class="ud-stat">
-            <div class="ud-stat-lbl">Menunggu</div>
-            <div class="ud-stat-val" style="{{ $pendingCount > 0 ? 'color:#c89a00;' : '' }}">
-                {{ $pendingCount }}
-            </div>
-            <div class="ud-stat-sub">Belum dikonfirmasi</div>
-        </div>
-    </div>
 
-    {{-- ── Info cards ── --}}
-    <div class="ud-info">
-
-        {{-- Sesi Mendatang --}}
-        <div class="ud-ic">
-            <div class="ud-ic-eyebrow">
-                <span>Sesi Mendatang</span>
-                @if ($nextBooking)
-                    <span class="ud-badge ud-badge-{{ $nextBooking->status }}">
-                        {{ $nextBooking->status_label }}
-                    </span>
-                @endif
-            </div>
-            @if ($nextBooking)
-                <div
-                    style="font-size:18px;font-weight:800;color:#111;letter-spacing:-0.02em;margin-bottom:10px;line-height:1.2;">
-                    {{ $nextBooking->package->name ?? 'Paket Fotografi' }}
-                </div>
-                <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#aaa;">
-                    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    {{ $nextBooking->start_date->format('d M Y') }}
-                    @if (!$nextBooking->start_date->equalTo($nextBooking->end_date))
-                        — {{ $nextBooking->end_date->format('d M Y') }}
-                    @endif
-                </div>
-            @else
-                <div style="font-size:13px;color:#ccc;font-style:italic;margin-top:8px;">
-                    Tidak ada sesi mendatang.
-                </div>
-                <a href="{{ route('price') }}"
-                    style="display:inline-block;margin-top:12px;font-size:11.5px;font-weight:700;
-                      color:#111;text-decoration:none;border-bottom:1.5px solid #111;">
-                    Pesan Sekarang →
-                </a>
-            @endif
-        </div>
-
-        {{-- Galeri Siap --}}
-        @if ($readyGallery)
-            <div class="ud-ic yellow">
-                <div style="font-size:13px;font-weight:800;color:#111;margin-bottom:8px;">Galeri Siap! 🎉</div>
-                <p style="font-size:12.5px;color:rgba(0,0,0,0.6);line-height:1.5;margin-bottom:16px;">
-                    Sesi <strong>{{ $readyGallery->package->name ?? 'foto' }}</strong> Anda telah selesai diproses.
-                </p>
-                <a href="{{ $readyGallery->drive_link }}" target="_blank"
-                    style="display:inline-block;background:#111;color:#fff;font-size:12px;font-weight:700;
-                      padding:9px 18px;border-radius:8px;text-decoration:none;">
-                    Buka Galeri
-                </a>
-            </div>
-        @else
-            <div class="ud-ic" style="background:#f9f9f7;border-color:#f0f0ee;">
-                <div class="ud-ic-eyebrow">Galeri</div>
-                <div style="font-size:13px;color:#ccc;font-style:italic;margin-top:8px;">
-                    Belum ada galeri yang siap.
-                </div>
-                <p style="font-size:11.5px;color:#bbb;margin-top:8px;line-height:1.5;">
-                    Galeri akan tersedia setelah sesi foto selesai diedit.
-                </p>
-            </div>
-        @endif
-
-        {{-- Bantuan --}}
-        <div class="ud-ic muted">
-            <div
-                style="width:40px;height:40px;background:#fff;border-radius:50%;border:1px solid #e8e8e6;
-                    display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
-                <svg width="18" height="18" fill="none" stroke="#888" viewBox="0 0 24 24" stroke-width="1.8">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536
-                             M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536
-                             M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-            </div>
-            <div style="font-size:13px;font-weight:600;color:#111;margin-bottom:8px;">Butuh bantuan kurasi?</div>
-            <p style="font-size:11.5px;color:#aaa;line-height:1.5;margin-bottom:12px;">
-                Tim kurator kami siap membantu konsep sesi foto Anda.
-            </p>
-            <a href="#"
-                style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;
-                           color:#c89a00;text-decoration:none;">
-                Hubungi Konsultan →
-            </a>
-        </div>
-
-    </div>
 
     {{-- ── Table + Calendar ── --}}
     <div class="ud-grid">
@@ -688,47 +572,6 @@
 
     </div>
 
-    {{-- ── Footer ── --}}
-    <div class="ud-footer">
-        <div class="ud-footer-grid">
-            <div>
-                <div class="ud-footer-brand">
-                    <div class="ud-footer-brand-icon">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69
-                                     h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118
-                                     l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176
-                                     0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363
-                                     -1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                        </svg>
-                    </div>
-                    MomentHub
-                </div>
-                <p class="ud-footer-desc">Layanan fotografi premium untuk mengabadikan momen berharga Anda.</p>
-            </div>
-            <div class="ud-footer-col">
-                <div class="ud-footer-col-title">Perusahaan</div>
-                <a href="#">Tentang Kami</a>
-                <a href="#">Kontak</a>
-                <a href="#">Blog</a>
-            </div>
-            <div class="ud-footer-col">
-                <div class="ud-footer-col-title">Bantuan</div>
-                <a href="#">Pusat Bantuan</a>
-                <a href="#">Syarat &amp; Ketentuan</a>
-                <a href="#">Kebijakan Privasi</a>
-            </div>
-            <div class="ud-footer-col">
-                <div class="ud-footer-col-title">Navigasi</div>
-                <a href="{{ route('home') }}">Beranda</a>
-                <a href="{{ route('gallery') }}">Galeri</a>
-                <a href="{{ route('price') }}">Pemesanan</a>
-                <a href="{{ route('user.bookings') }}">Pesanan Saya</a>
-            </div>
-        </div>
-        <div class="ud-footer-bottom">© {{ date('Y') }} MomentHub. All rights reserved.</div>
-    </div>
 
     {{-- Tooltip --}}
     <div id="ud-tip">
@@ -741,13 +584,21 @@
             const events = @json($calendarEvents);
             const tip = document.getElementById('ud-tip');
 
-            function fmt(s) {
-                if (!s) return '';
-                const d = new Date(s + 'T00:00:00');
-                return d.toLocaleDateString('id-ID', {
+            function fmt(dateObj) {
+                if (!dateObj) return '';
+                return dateObj.toLocaleDateString('id-ID', {
                     day: 'numeric',
                     month: 'short',
                     year: 'numeric'
+                });
+            }
+
+            function fmtTime(dateObj) {
+                if (!dateObj) return '';
+                return dateObj.toLocaleTimeString('id-ID', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
                 });
             }
 
@@ -770,13 +621,32 @@
                 eventMouseEnter: function(info) {
                     const ev = info.event;
                     const ext = ev.extendedProps;
-                    document.getElementById('ud-tip-title').textContent = ev.title + ' — ' + (ext
-                        .status ?? '');
-                    const endMs = ev.end ? ev.end.getTime() - 86400000 : null;
-                    const endStr = endMs ? new Date(endMs).toISOString().split('T')[0] : null;
-                    const s = fmt(ev.start.toISOString().split('T')[0]);
-                    const e = endStr ? fmt(endStr) : s;
-                    document.getElementById('ud-tip-date').textContent = s === e ? s : s + ' — ' + e;
+
+                    document.getElementById('ud-tip-title').textContent =
+                        ev.title + ' — ' + (ext.status ?? '');
+
+                    const start = ev.start;
+                    const end = ev.end;
+
+                    let dateText = '';
+                    if (end) {
+                        const startDate = fmt(start);
+                        const endDate = fmt(end);
+                        const startTime = fmtTime(start);
+                        const endTime = fmtTime(end);
+
+                        if (startDate === endDate) {
+                            // Sesi 1 hari: "28 Jun 2026, 08:00 – 12:00 WIB"
+                            dateText = `${startDate}, ${startTime} – ${endTime} WIB`;
+                        } else {
+                            // Beda hari: "28 Jun 2026 08:00 – 29 Jun 2026 12:00 WIB"
+                            dateText = `${startDate} ${startTime} – ${endDate} ${endTime} WIB`;
+                        }
+                    } else {
+                        dateText = `${fmt(start)}, ${fmtTime(start)} WIB`;
+                    }
+
+                    document.getElementById('ud-tip-date').textContent = dateText;
                     tip.classList.add('show');
                 },
                 eventMouseLeave: function() {

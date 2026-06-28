@@ -1,7 +1,8 @@
 @php
     /*
     resources/views/partials/user-booking-modal.blade.php
-    Trigger: openUbModal(id, packageId, pkgName, total, startDate, endDate, notes, canEdit)
+    Trigger: openUbModal(id, packageId, pkgName, total, startDatetime, endDatetime, notes, canEdit, paymentProofUrl)
+    startDatetime & endDatetime → format: "2026-06-28T15:00"
 */
 @endphp
 
@@ -174,6 +175,43 @@
         color: #bbb;
     }
 
+    /* Bukti pembayaran existing */
+    #ubm-existing-proof {
+        margin-bottom: 14px;
+    }
+
+    .ubm-proof-label {
+        font-size: 9.5px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #bbb;
+        margin-bottom: 6px;
+    }
+
+    .ubm-proof-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #c89a00;
+        background: #fffbe6;
+        border: 1px solid #f5e08a;
+        padding: 6px 13px;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: background 0.12s;
+    }
+
+    .ubm-proof-btn:hover {
+        background: #fef3c7;
+    }
+
+    .ubm-proof-btn svg {
+        flex-shrink: 0;
+    }
+
     .ubm-row-2 {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -300,6 +338,12 @@
         font-family: inherit;
         cursor: pointer;
         box-sizing: border-box;
+        transition: border-color 0.15s;
+    }
+
+    .ubm-file:focus {
+        outline: none;
+        border-color: #f5c518;
     }
 
     .ubm-file::file-selector-button {
@@ -313,6 +357,7 @@
         cursor: pointer;
         margin-right: 10px;
         font-family: inherit;
+        transition: background 0.12s;
     }
 
     .ubm-file::file-selector-button:hover {
@@ -414,20 +459,18 @@
         <div class="ubm-body">
             <form id="ubm-form" method="POST" action="" enctype="multipart/form-data">
                 @csrf @method('PATCH')
-
-                {{-- Hidden fields --}}
                 <input type="hidden" id="ubm-pkg-id" name="_pkg_id">
 
                 {{-- Package row --}}
                 <div class="ubm-pkg-row">
                     <div>
                         <div class="ubm-pkg-name" id="ubm-pkg-name">—</div>
-                        <div class="ubm-pkg-sub">Paket yang dipesan</div>
+                        <div class="ubm-pkg-sub" id="ubm-pkg-sub">Paket yang dipesan</div>
                     </div>
                     <div class="ubm-pkg-price" id="ubm-pkg-price">—</div>
                 </div>
 
-                {{-- Current dates info --}}
+                {{-- Current datetime info --}}
                 <div class="ubm-date-info">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -436,20 +479,39 @@
                     <span id="ubm-date-info-text">—</span>
                 </div>
 
-                {{-- Date pickers --}}
-                <div class="ubm-row-2 ubm-group">
+                {{-- Bukti pembayaran existing (muncul jika ada) --}}
+                <div id="ubm-existing-proof" style="display:none;">
+                    <div class="ubm-proof-label">Bukti Pembayaran Sebelumnya</div>
+                    <a id="ubm-proof-link" href="#" target="_blank" class="ubm-proof-btn">
+                        <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943
+                                   9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        Lihat Bukti Sebelumnya
+                        <svg width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                    </a>
+                </div>
+
+                {{-- Datetime inputs --}}
+                <div class="ubm-row-2 ubm-group" style="margin-top:14px;">
                     <div>
                         <label class="ubm-label" for="ubm-start">
-                            Tanggal Mulai <span class="req">*</span>
+                            Mulai <span class="req">*</span>
                         </label>
-                        <input type="date" id="ubm-start" name="start_date" class="ubm-input"
+                        <input type="datetime-local" id="ubm-start" name="start_date" class="ubm-input"
                             onchange="ubOnDateChange()">
                     </div>
                     <div>
                         <label class="ubm-label" for="ubm-end">
-                            Tanggal Selesai <span class="req">*</span>
+                            Selesai <span class="req">*</span>
                         </label>
-                        <input type="date" id="ubm-end" name="end_date" class="ubm-input"
+                        <input type="datetime-local" id="ubm-end" name="end_date" class="ubm-input"
                             onchange="ubOnDateChange()">
                     </div>
                 </div>
@@ -474,7 +536,7 @@
 
                 <hr class="ubm-divider">
 
-                {{-- Bukti pembayaran --}}
+                {{-- Upload Bukti Pembayaran --}}
                 <div class="ubm-group">
                     <label class="ubm-label" for="ubm-proof">Upload Bukti Pembayaran</label>
                     <input type="file" id="ubm-proof" name="payment_proof" class="ubm-file"
@@ -496,9 +558,7 @@
 
         {{-- Footer --}}
         <div class="ubm-footer">
-            <button type="button" class="ubm-btn ubm-btn-cancel" onclick="closeUbModal()">
-                Tutup
-            </button>
+            <button type="button" class="ubm-btn ubm-btn-cancel" onclick="closeUbModal()">Tutup</button>
             <button type="button" id="ubm-save-btn" class="ubm-btn ubm-btn-save" onclick="submitUbForm()" disabled>
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
@@ -518,70 +578,82 @@
     let _ubChecked = false;
     let _ubCanEdit = false;
 
-    // ── Open ──────────────────────────────────────────────────────────────
-    function openUbModal(id, packageId, pkgName, total, startDate, endDate, notes, canEdit) {
+    function ubFmtDt(dtLocal) {
+        if (!dtLocal) return '—';
+        const d = new Date(dtLocal);
+        return d.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
+            }) +
+            ', ' +
+            d.toLocaleTimeString('id-ID', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            }) +
+            ' WIB';
+    }
+
+    // ── Open ────────────────────────────────────────────────────────────
+    function openUbModal(id, packageId, pkgName, total, startDatetime, endDatetime, notes, canEdit, paymentProofUrl) {
         _ubBookingId = id;
         _ubPkgId = packageId;
-        _ubOrigStart = startDate;
-        _ubOrigEnd = endDate;
+        _ubOrigStart = startDatetime;
+        _ubOrigEnd = endDatetime;
         _ubCanEdit = canEdit;
         _ubChecked = false;
 
-        // Form action
         document.getElementById('ubm-form').action = '/user/booking/' + id;
         document.getElementById('ubm-pkg-id').value = packageId;
-
-        // Titles & info
         document.getElementById('ubm-title').textContent = 'Pesanan #MH-' + String(id).padStart(5, '0');
         document.getElementById('ubm-pkg-name').textContent = pkgName;
         document.getElementById('ubm-pkg-price').textContent = total;
         document.getElementById('ubm-notes').value = notes || '';
 
         // Date info label
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'];
+        const sameDay = startDatetime.split('T')[0] === endDatetime.split('T')[0];
+        document.getElementById('ubm-date-info-text').textContent = sameDay ?
+            'Sesi: ' + ubFmtDt(startDatetime) + ' – ' +
+            new Date(endDatetime).toLocaleTimeString('id-ID', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            }) +
+            ' WIB' :
+            'Mulai: ' + ubFmtDt(startDatetime) + ' | Selesai: ' + ubFmtDt(endDatetime);
 
-        function fmt(d) {
-            const [y, m, day] = d.split('-');
-            return day + ' ' + months[parseInt(m) - 1] + ' ' + y;
-        }
-        document.getElementById('ubm-date-info-text').textContent =
-            'Tanggal saat ini: ' + fmt(startDate) +
-            (startDate !== endDate ? ' — ' + fmt(endDate) : '');
+        // Pre-fill datetime inputs
+        document.getElementById('ubm-start').value = startDatetime;
+        document.getElementById('ubm-end').value = endDatetime;
 
-        // Pre-fill dates
-        const today = new Date().toISOString().split('T')[0];
-        const startEl = document.getElementById('ubm-start');
-        const endEl = document.getElementById('ubm-end');
-
-        startEl.min = today;
-        endEl.min = today;
-        startEl.value = startDate;
-        endEl.value = endDate;
-
-        // If read-only (can't edit), disable date inputs and hide check button
-        startEl.disabled = !canEdit;
-        endEl.disabled = !canEdit;
+        // Disable jika tidak bisa edit
+        document.getElementById('ubm-start').disabled = !canEdit;
+        document.getElementById('ubm-end').disabled = !canEdit;
         document.getElementById('ubm-check-section').style.display = canEdit ? '' : 'none';
         document.getElementById('ubm-proof').disabled = !canEdit;
 
-        // Save button
-        if (canEdit) {
-            // Tanggal awal sama → langsung bisa simpan (tanpa cek ulang)
-            _ubChecked = true;
-            document.getElementById('ubm-save-btn').disabled = false;
-            document.getElementById('ubm-check-label').textContent = 'Tanggal tidak berubah';
-            document.getElementById('ubm-avail').classList.remove('show', 'ok', 'err');
+        // Bukti pembayaran existing
+        const proofBox = document.getElementById('ubm-existing-proof');
+        const proofLink = document.getElementById('ubm-proof-link');
+        if (paymentProofUrl) {
+            proofLink.href = paymentProofUrl;
+            proofBox.style.display = '';
         } else {
-            // Read-only mode: simpan hanya untuk catatan & bukti bayar
-            _ubChecked = true;
-            document.getElementById('ubm-save-btn').disabled = false;
+            proofBox.style.display = 'none';
         }
+
+        // Save langsung aktif
+        _ubChecked = true;
+        document.getElementById('ubm-save-btn').disabled = false;
+        document.getElementById('ubm-avail').classList.remove('show', 'ok', 'err');
+        document.getElementById('ubm-check-label').textContent = 'Cek Ketersediaan';
 
         document.getElementById('ub-overlay').classList.add('open');
         document.body.style.overflow = 'hidden';
     }
 
-    // ── Close ─────────────────────────────────────────────────────────────
+    // ── Close ───────────────────────────────────────────────────────────
     function closeUbModal() {
         document.getElementById('ub-overlay').classList.remove('open');
         document.body.style.overflow = '';
@@ -590,28 +662,27 @@
     function handleUbOverlay(e) {
         if (e.target === document.getElementById('ub-overlay')) closeUbModal();
     }
+
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape') closeUbModal();
     });
 
-    // ── Date change ───────────────────────────────────────────────────────
+    // ── Date change ─────────────────────────────────────────────────────
     function ubOnDateChange() {
         const start = document.getElementById('ubm-start').value;
         const end = document.getElementById('ubm-end').value;
 
         if (start) {
             document.getElementById('ubm-end').min = start;
-            if (end < start) document.getElementById('ubm-end').value = start;
+            if (end && end <= start) document.getElementById('ubm-end').value = '';
         }
 
-        // Sama dgn tanggal asli → tetap bisa simpan tanpa cek ulang
         if (start === _ubOrigStart && end === _ubOrigEnd) {
             _ubChecked = true;
             document.getElementById('ubm-save-btn').disabled = false;
             document.getElementById('ubm-avail').classList.remove('show', 'ok', 'err');
-            document.getElementById('ubm-check-label').textContent = 'Tanggal tidak berubah';
+            document.getElementById('ubm-check-label').textContent = 'Cek Ketersediaan';
         } else {
-            // Tanggal berubah → wajib cek dulu
             _ubChecked = false;
             document.getElementById('ubm-save-btn').disabled = true;
             document.getElementById('ubm-avail').classList.remove('show', 'ok', 'err');
@@ -619,12 +690,12 @@
         }
     }
 
-    // ── Check availability ────────────────────────────────────────────────
+    // ── Check availability ──────────────────────────────────────────────
     async function ubCheckAvail() {
         const start = document.getElementById('ubm-start').value;
         const end = document.getElementById('ubm-end').value;
-        let valid = true;
 
+        let valid = true;
         ['ubm-start', 'ubm-end'].forEach(id => {
             const el = document.getElementById(id);
             if (!el.value) {
@@ -633,8 +704,9 @@
             } else el.classList.remove('error');
         });
         if (!valid) return;
-        if (end < start) {
-            ubSetAvail(false, 'Tanggal selesai tidak boleh sebelum tanggal mulai.');
+
+        if (end <= start) {
+            ubSetAvail(false, 'Waktu selesai harus setelah waktu mulai.');
             return;
         }
 
@@ -657,10 +729,10 @@
                     'Accept': 'application/json',
                 },
                 body: JSON.stringify({
-                    package_id: _ubPkgId, // ← fix: dari variabel, bukan dari DOM
-                    start_date: start,
-                    end_date: end,
-                    booking_id: _ubBookingId, // ← exclude diri sendiri
+                    package_id: _ubPkgId,
+                    start_date: start.replace('T', ' ') + ':00',
+                    end_date: end.replace('T', ' ') + ':00',
+                    booking_id: _ubBookingId,
                 }),
             });
 
@@ -690,7 +762,7 @@
             '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>';
     }
 
-    // ── Submit ────────────────────────────────────────────────────────────
+    // ── Submit ──────────────────────────────────────────────────────────
     function submitUbForm() {
         const proof = document.getElementById('ubm-proof');
         if (proof.files[0] && proof.files[0].size > 5 * 1024 * 1024) {
@@ -698,8 +770,9 @@
             return;
         }
         const btn = document.getElementById('ubm-save-btn');
+        const label = document.getElementById('ubm-save-label');
         btn.disabled = true;
-        document.getElementById('ubm-save-label').textContent = 'Menyimpan…';
+        label.textContent = 'Menyimpan…';
         document.getElementById('ubm-form').submit();
     }
 

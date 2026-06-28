@@ -186,70 +186,14 @@
         </section>
 
         {{-- ===================== FOOTER ===================== --}}
-        <footer class="bg-white border-t border-gray-100 py-16">
+        <footer class="bg-gray-900 border-t border-gray-800 pt-5 pb-5">
             <div class="max-w-6xl mx-auto px-6">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
 
-                    {{-- Brand --}}
-                    <div class="col-span-2 md:col-span-1">
-                        <div class="font-bold text-gray-900 text-sm mb-3">MomentHub</div>
-                        <p class="text-xs text-gray-400 leading-relaxed max-w-xs mb-5">
-                            Digital Curator untuk momen tak ternilai Anda. Menghubungkan visi dengan lensa profesional
-                            terbaik.
-                        </p>
-                    </div>
+                <span class="text-[10px] text-gray-600 uppercase tracking-widest">© 2024 MomentHub. Editorial
+                    Photography Curator.</span>
 
-                    {{-- Navigasi --}}
-                    <div>
-                        <div class="text-[9px] uppercase tracking-widest font-bold text-gray-400 mb-5">Navigasi</div>
-                        <ul class="space-y-3">
-                            <li><a href="{{ route('home') }}"
-                                    class="text-xs text-gray-500 hover:text-gray-900 transition-colors">Tentang Kami</a>
-                            </li>
-                            <li><a href="{{ route('price') }}"
-                                    class="text-xs text-gray-500 hover:text-gray-900 transition-colors">Pemesanan</a></li>
-                            <li><a href="{{ route('gallery') }}"
-                                    class="text-xs text-gray-500 hover:text-gray-900 transition-colors">Galeri</a></li>
-                            <li><a href="#"
-                                    class="text-xs text-gray-500 hover:text-gray-900 transition-colors">Kontak</a></li>
-                        </ul>
-                    </div>
 
-                    {{-- Legal --}}
-                    <div>
-                        <div class="text-[9px] uppercase tracking-widest font-bold text-gray-400 mb-5">Legal</div>
-                        <ul class="space-y-3">
-                            <li><a href="#"
-                                    class="text-xs text-gray-500 hover:text-gray-900 transition-colors">Syarat &amp;
-                                    Ketentuan</a></li>
-                            <li><a href="#"
-                                    class="text-xs text-gray-500 hover:text-gray-900 transition-colors">Kebijakan
-                                    Privasi</a></li>
-                            <li><a href="#"
-                                    class="text-xs text-gray-500 hover:text-gray-900 transition-colors">FAQ</a></li>
-                        </ul>
-                    </div>
 
-                    {{-- Ikuti Kami --}}
-                    <div>
-                        <div class="text-[9px] uppercase tracking-widest font-bold text-gray-400 mb-5">Ikuti Kami</div>
-                        <div class="flex gap-2.5">
-                            @foreach (['IG', 'BE', 'LI'] as $s)
-                                <a href="#"
-                                    class="w-8 h-8 border border-gray-200 rounded-full flex items-center justify-center
-                                          text-[9px] font-bold text-gray-400 hover:border-gray-900 hover:text-gray-900 transition-colors">
-                                    {{ $s }}
-                                </a>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-
-                <div class="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-3">
-                    <span class="text-[10px] text-gray-400">© 2024 MomentHub. Hak Cipta Dilindungi.</span>
-                    <a href="{{ route('price') }}"
-                        class="text-[10px] text-gray-400 underline underline-offset-2 hover:text-gray-900 transition-colors">Pemesanan</a>
-                </div>
             </div>
         </footer>
 

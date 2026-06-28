@@ -1,10 +1,4 @@
-@php
-    /*
-    admin/bookings/modal.blade.php
-    @include('admin.bookings.modal')
-    Trigger: openBkUpdateModal(id, clientName, packageName, currentStatus, notes, driveLink, paymentProofUrl)
-*/
-@endphp
+
 
 <style>
     #adm-bk-overlay {
@@ -31,7 +25,7 @@
         background: #fff;
         border-radius: 16px;
         width: 100%;
-        max-width: 500px;
+        max-width: 520px;
         max-height: 92vh;
         overflow-y: auto;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
@@ -117,12 +111,12 @@
         margin-bottom: 0;
     }
 
-    /* Info boxes */
+    /* Info row */
     .abm-info-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 10px;
-        margin-bottom: 18px;
+        margin-bottom: 14px;
     }
 
     .abm-info-box {
@@ -147,7 +141,13 @@
         color: #111;
     }
 
-    /* Proof box */
+    .abm-info-sub {
+        font-size: 10.5px;
+        color: #aaa;
+        margin-top: 1px;
+    }
+
+    /* Proof */
     .abm-proof-box {
         display: flex;
         align-items: center;
@@ -156,7 +156,7 @@
         border: 1.5px solid #eeeeec;
         border-radius: 9px;
         padding: 10px 13px;
-        margin-bottom: 18px;
+        margin-bottom: 14px;
     }
 
     .abm-proof-none {
@@ -189,7 +189,14 @@
         height: 12px;
     }
 
-    /* Form inputs */
+    /* Divider */
+    .abm-divider {
+        border: none;
+        border-top: 1px solid #f0f0ee;
+        margin: 16px 0;
+    }
+
+    /* Inputs */
     .abm-label {
         display: block;
         font-size: 10px;
@@ -228,7 +235,72 @@
         line-height: 1.6;
     }
 
-    /* Drive link input wrapper */
+    .abm-row-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    /* Estimasi (muncul saat datetime berubah) */
+    #abm-estimate {
+        display: none;
+        background: #f9f9f7;
+        border: 1.5px solid #eeeeec;
+        border-radius: 9px;
+        padding: 10px 13px;
+        margin-top: 8px;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    #abm-estimate.show {
+        display: flex;
+    }
+
+    .abm-est-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: #555;
+        padding: 2px 0;
+    }
+
+    .abm-est-row.total {
+        font-size: 13px;
+        font-weight: 800;
+        color: #111;
+        border-top: 1px solid #e8e8e6;
+        margin-top: 6px;
+        padding-top: 7px;
+    }
+
+    /* Peringatan pembulatan */
+    #abm-round-warn {
+        display: none;
+        align-items: flex-start;
+        gap: 6px;
+        font-size: 11px;
+        color: #92400e;
+        background: #fffbe6;
+        border: 1px solid #f5e08a;
+        border-radius: 8px;
+        padding: 7px 10px;
+        margin-top: 6px;
+        line-height: 1.5;
+    }
+
+    #abm-round-warn.show {
+        display: flex;
+    }
+
+    #abm-round-warn svg {
+        width: 13px;
+        height: 13px;
+        flex-shrink: 0;
+        margin-top: 1px;
+    }
+
+    /* Drive link */
     .abm-drive-wrap {
         position: relative;
     }
@@ -238,14 +310,15 @@
         left: 11px;
         top: 50%;
         transform: translateY(-50%);
-        width: 15px;
-        height: 15px;
+        width: 14px;
+        height: 14px;
         color: #aaa;
         pointer-events: none;
     }
 
     .abm-drive-wrap .abm-input {
-        padding-left: 34px;
+        padding-left: 32px;
+        padding-right: 40px;
     }
 
     .abm-drive-open {
@@ -278,10 +351,6 @@
         height: 12px;
     }
 
-    .abm-drive-wrap .abm-input {
-        padding-right: 40px;
-    }
-
     /* Status chips */
     .abm-chips {
         display: flex;
@@ -309,7 +378,6 @@
         color: #333;
     }
 
-    /* Chip colors per status */
     .abm-chip.sel-pending {
         background: #f0f0ee;
         color: #555;
@@ -344,13 +412,6 @@
         background: #fee2e2;
         color: #b91c1c;
         border-color: #fca5a5;
-    }
-
-    /* Divider */
-    .abm-divider {
-        border: none;
-        border-top: 1px solid #f0f0ee;
-        margin: 16px 0;
     }
 
     /* Footer */
@@ -435,6 +496,7 @@
                     <div class="abm-info-box">
                         <div class="abm-info-label">Klien</div>
                         <div class="abm-info-value" id="abm-client">—</div>
+                        <div class="abm-info-sub" id="abm-client-email">—</div>
                     </div>
                     <div class="abm-info-box">
                         <div class="abm-info-label">Paket</div>
@@ -443,16 +505,60 @@
                 </div>
 
                 {{-- Bukti pembayaran --}}
+                <div class="abm-proof-box">
+                    <div
+                        style="font-size:9.5px;color:#aaa;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;">
+                        Bukti Pembayaran
+                    </div>
+                    <div id="abm-proof-slot">
+                        <span class="abm-proof-none">Tidak ada bukti</span>
+                    </div>
+                </div>
+
+                <hr class="abm-divider">
+
+                {{-- Edit Waktu Sesi --}}
                 <div class="abm-group">
-                    <label class="abm-label">Bukti Pembayaran</label>
-                    <div class="abm-proof-box">
-                        <div
-                            style="font-size:9.5px;color:#aaa;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;">
-                            File Upload
+                    <label class="abm-label">Waktu Sesi</label>
+                    <div class="abm-row-2">
+                        <div>
+                            <div style="font-size:10px;color:#bbb;font-weight:600;margin-bottom:4px;">MULAI</div>
+                            <input type="datetime-local" id="abm-start" name="start_date" class="abm-input"
+                                onchange="abmCalcEstimate()">
                         </div>
-                        <div id="abm-proof-slot">
-                            <span class="abm-proof-none">Tidak ada bukti</span>
+                        <div>
+                            <div style="font-size:10px;color:#bbb;font-weight:600;margin-bottom:4px;">SELESAI</div>
+                            <input type="datetime-local" id="abm-end" name="end_date" class="abm-input"
+                                onchange="abmCalcEstimate()">
                         </div>
+                    </div>
+
+                    {{-- Estimasi harga (muncul jika tanggal diubah) --}}
+                    <div id="abm-estimate">
+                        <div class="abm-est-row">
+                            <span>Durasi aktual</span>
+                            <span id="abm-est-actual">—</span>
+                        </div>
+                        <div class="abm-est-row">
+                            <span>Ditagih</span>
+                            <span id="abm-est-billed">—</span>
+                        </div>
+                        <div class="abm-est-row">
+                            <span>Tarif</span>
+                            <span id="abm-est-rate">—</span>
+                        </div>
+                        <div class="abm-est-row total">
+                            <span>Estimasi Total Baru</span>
+                            <span id="abm-est-total">—</span>
+                        </div>
+                    </div>
+
+                    <div id="abm-round-warn">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                        </svg>
+                        <span id="abm-round-warn-text"></span>
                     </div>
                 </div>
 
@@ -481,40 +587,25 @@
 
                 {{-- Link Google Drive --}}
                 <div class="abm-group">
-                    <label class="abm-label" for="abm-drive">Link Google Drive</label>
+                    <label class="abm-label" for="abm-drive">Link Google Drive (Hasil Foto)</label>
                     <div class="abm-drive-wrap">
-                        <svg class="abm-drive-icon" viewBox="0 0 87.3 78" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M6.6 66.85l3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3L27.5 53.5H0c0 1.55.4 3.1 1.2 4.5l5.4 8.85z"
-                                fill="#aaa" />
-                            <path
-                                d="M43.65 25L29.9 1.2C28.55.4 27 0 25.45 0c-1.55 0-3.1.4-4.5 1.2L3.65 31.25 0 37.6c-.8 1.4-1.2 2.95-1.2 4.5H27.5l16.15-17.1z"
-                                fill="#aaa" />
-                            <path
-                                d="M73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.2c.8-1.4 1.2-2.95 1.2-4.5H59.8l5.65 9.5 8.1 14.25z"
-                                fill="#aaa" />
-                            <path d="M43.65 25L57.4 1.2C56 .4 54.45 0 52.9 0H34.4c-1.55 0-3.1.4-4.5 1.2L43.65 25z"
-                                fill="#aaa" />
-                            <path
-                                d="M59.8 53.5H27.5L13.75 76.8c1.4.8 2.95 1.2 4.5 1.2h50.8c1.55 0 3.1-.4 4.5-1.2L59.8 53.5z"
-                                fill="#aaa" />
-                            <path
-                                d="M73.4 26.15l-16.2-14.9c-1.35-.8-2.9-1.25-4.5-1.25h-18.1L43.65 25l15.95 28.5h27.5c0-1.55-.4-3.1-1.2-4.5L73.4 26.15z"
-                                fill="#aaa" />
+                        <svg class="abm-drive-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
                         </svg>
                         <input type="url" id="abm-drive" name="drive_link" class="abm-input"
-                            placeholder="https://drive.google.com/..." oninput="updateDriveOpenBtn()">
+                            placeholder="https://drive.google.com/…" oninput="abmUpdateDriveBtn(); abmMarkDirty()">
                         <a href="#" id="abm-drive-open-btn" target="_blank" class="abm-drive-open"
                             title="Buka di tab baru" style="display:none;">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4
-                                         M14 4h6m0 0v6m0-6L10 14" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                             </svg>
                         </a>
                     </div>
                     <div style="font-size:10.5px;color:#bbb;margin-top:4px;">
-                        Opsional — link folder atau file hasil foto di Google Drive
+                        Opsional — link folder hasil foto untuk klien
                     </div>
                 </div>
 
@@ -522,7 +613,7 @@
                 <div class="abm-group">
                     <label class="abm-label" for="abm-notes">Catatan Admin</label>
                     <textarea id="abm-notes" name="notes" class="abm-textarea" rows="2" maxlength="500"
-                        placeholder="Catatan untuk klien atau internal…"></textarea>
+                        placeholder="Catatan untuk klien atau internal…" oninput="abmMarkDirty()"></textarea>
                 </div>
 
             </form>
@@ -530,10 +621,9 @@
 
         {{-- Footer --}}
         <div class="abm-footer">
-            <button type="button" class="abm-btn abm-btn-cancel" onclick="closeAdmBkModal()">
-                Batal
-            </button>
-            <button type="button" id="abm-save-btn" class="abm-btn abm-btn-save" onclick="submitAdmBkForm()" disabled>
+            <button type="button" class="abm-btn abm-btn-cancel" onclick="closeAdmBkModal()">Batal</button>
+            <button type="button" id="abm-save-btn" class="abm-btn abm-btn-save" onclick="submitAdmBkForm()"
+                disabled>
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
@@ -545,57 +635,82 @@
 </div>
 
 <script>
-    let admBkCurrentStatus = '';
+    let admBkOriginalStatus = '';
+    let admBkOriginalStart = '';
+    let admBkOriginalEnd = '';
+    let admBkPricePerHour = 0;
+    let admBkDirty = false;
 
-    function openBkUpdateModal(id, clientName, packageName, currentStatus, notes, driveLink, paymentProofUrl) {
-        // Reset
+    function fmtRp(n) {
+        return 'Rp ' + parseInt(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    // ── Open ────────────────────────────────────────────────────────
+    function openBkUpdateModal(id, clientName, clientEmail, packageName, currentStatus,
+        startDt, endDt, formattedTotal, billedHours,
+        notes, driveLink, paymentProofUrl) {
+        // Reset state
+        admBkOriginalStatus = currentStatus;
+        admBkOriginalStart = startDt;
+        admBkOriginalEnd = endDt;
+        admBkDirty = false;
+
         document.querySelectorAll('.abm-chip').forEach(c => c.className = 'abm-chip');
         document.getElementById('abm-save-btn').disabled = true;
-        admBkCurrentStatus = currentStatus;
+        document.getElementById('abm-estimate').classList.remove('show');
+        document.getElementById('abm-round-warn').classList.remove('show');
 
-        // Set form action
+        // Form action
         document.getElementById('abm-form').action = '/admin/bookings/' + id;
 
-        // Set info
+        // Header
         document.getElementById('abm-title').textContent = '#ORD-' + String(id).padStart(4, '0');
+
+        // Info
         document.getElementById('abm-client').textContent = clientName;
+        document.getElementById('abm-client-email').textContent = clientEmail;
         document.getElementById('abm-package').textContent = packageName;
-        document.getElementById('abm-notes').value = notes || '';
+
+        // Datetime
+        document.getElementById('abm-start').value = startDt;
+        document.getElementById('abm-end').value = endDt;
+
+        // Ambil price per hour dari booking total / billed hours untuk estimasi
+        admBkPricePerHour = billedHours > 0 ?
+            Math.round(parseInt((formattedTotal || '0').replace(/\D/g, '')) / billedHours) :
+            0;
 
         // Bukti pembayaran
         const proofSlot = document.getElementById('abm-proof-slot');
         if (paymentProofUrl) {
             proofSlot.innerHTML = `
-            <a href="${paymentProofUrl}" target="_blank" class="abm-proof-link">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943
-                             9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                </svg>
-                Lihat Bukti
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" style="width:10px;height:10px;">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                </svg>
-            </a>`;
+                <a href="${paymentProofUrl}" target="_blank" class="abm-proof-link">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943
+                               9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                    Lihat Bukti
+                </a>`;
         } else {
             proofSlot.innerHTML = '<span class="abm-proof-none">Tidak ada bukti</span>';
         }
 
-        // Drive link
-        const driveInput = document.getElementById('abm-drive');
-        driveInput.value = driveLink || '';
-        updateDriveOpenBtn();
+        // Drive & notes
+        document.getElementById('abm-drive').value = driveLink || '';
+        document.getElementById('abm-notes').value = notes || '';
+        abmUpdateDriveBtn();
 
-        // Set status chip
+        // Status chip
         selectAbmStatus(currentStatus, false);
 
         document.getElementById('adm-bk-overlay').classList.add('open');
         document.body.style.overflow = 'hidden';
     }
 
+    // ── Close ───────────────────────────────────────────────────────
     function closeAdmBkModal() {
         document.getElementById('adm-bk-overlay').classList.remove('open');
         document.body.style.overflow = '';
@@ -609,28 +724,33 @@
         if (e.key === 'Escape') closeAdmBkModal();
     });
 
-    function selectAbmStatus(status, enableSave = true) {
+    // ── Tandai dirty (ada perubahan) ────────────────────────────────
+    function abmMarkDirty() {
+        admBkDirty = true;
+        abmCheckSaveBtn();
+    }
+
+    function abmCheckSaveBtn() {
+        const status = document.getElementById('abm-status-input').value;
+        document.getElementById('abm-save-btn').disabled = !status && !admBkDirty;
+        if (status) document.getElementById('abm-save-btn').disabled = false;
+    }
+
+    // ── Status chip ─────────────────────────────────────────────────
+    function selectAbmStatus(status, markDirty = true) {
         document.querySelectorAll('.abm-chip').forEach(c => c.className = 'abm-chip');
         const chip = document.getElementById('chip-' + status);
         if (chip) chip.className = 'abm-chip sel-' + status;
         document.getElementById('abm-status-input').value = status;
 
-        if (enableSave) {
-            document.getElementById('abm-save-btn').disabled = (status === admBkCurrentStatus);
-        } else {
-            document.getElementById('abm-save-btn').disabled = true;
+        if (markDirty) {
+            admBkDirty = true;
+            document.getElementById('abm-save-btn').disabled = false;
         }
     }
 
-    // Aktifkan tombol save juga saat drive_link berubah
-    document.getElementById('abm-drive').addEventListener('input', () => {
-        const currentStatus = document.getElementById('abm-status-input').value;
-        if (currentStatus) {
-            document.getElementById('abm-save-btn').disabled = false;
-        }
-    });
-
-    function updateDriveOpenBtn() {
+    // ── Drive link button ───────────────────────────────────────────
+    function abmUpdateDriveBtn() {
         const val = document.getElementById('abm-drive').value.trim();
         const btn = document.getElementById('abm-drive-open-btn');
         if (val && val.startsWith('http')) {
@@ -641,9 +761,52 @@
         }
     }
 
+    // ── Estimasi harga live ─────────────────────────────────────────
+    function abmCalcEstimate() {
+        const start = document.getElementById('abm-start').value;
+        const end = document.getElementById('abm-end').value;
+        const est = document.getElementById('abm-estimate');
+        const warn = document.getElementById('abm-round-warn');
+
+        // Sync end min
+        if (start) document.getElementById('abm-end').min = start;
+
+        if (!start || !end || end <= start) {
+            est.classList.remove('show');
+            warn.classList.remove('show');
+            abmMarkDirty();
+            return;
+        }
+
+        const totalMins = Math.round((new Date(end) - new Date(start)) / 60000);
+        const billedHrs = Math.ceil(totalMins / 60);
+        const totalPrice = billedHrs * admBkPricePerHour;
+
+        const h = Math.floor(totalMins / 60);
+        const m = totalMins % 60;
+        const actualStr = h > 0 ? `${h} jam${m > 0 ? ` ${m} menit` : ''}` : `${m} menit`;
+
+        document.getElementById('abm-est-actual').textContent = actualStr;
+        document.getElementById('abm-est-billed').textContent = `${billedHrs} jam`;
+        document.getElementById('abm-est-rate').textContent = fmtRp(admBkPricePerHour) + '/jam';
+        document.getElementById('abm-est-total').textContent = fmtRp(totalPrice);
+        est.classList.add('show');
+
+        if (totalMins % 60 !== 0) {
+            document.getElementById('abm-round-warn-text').textContent =
+                `Durasi ${actualStr} dibulatkan ke ${billedHrs} jam. Total akan dihitung ulang.`;
+            warn.classList.add('show');
+        } else {
+            warn.classList.remove('show');
+        }
+
+        abmMarkDirty();
+    }
+
+    // ── Submit ──────────────────────────────────────────────────────
     function submitAdmBkForm() {
         const btn = document.getElementById('abm-save-btn');
-        const label = document.getElementById('abm-submit-label') || document.getElementById('abm-save-label');
+        const label = document.getElementById('abm-save-label');
         btn.disabled = true;
         label.textContent = 'Menyimpan…';
         document.getElementById('abm-form').submit();

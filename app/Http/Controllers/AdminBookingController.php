@@ -4,18 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class AdminBookingController extends Controller
 {
+    // ── HELPER ────────────────────────────────────────────────────────
+
+    private function calcBilledHours(string $start, string $end): int
+    {
+        $minutes = Carbon::parse($start)->diffInMinutes(Carbon::parse($end));
+        return (int) ceil($minutes / 60);
+    }
+
     // ── INDEX ──────────────────────────────────────────────────────────
 
     public function index(Request $request): View
     {
         $status    = $request->query('status', 'all');
-        $dateRange = $request->query('range', '10');
+        $dateRange = $request->query('range', '30');
 
         $query = Booking::with(['user', 'package'])->latest('created_at');
 
@@ -32,6 +41,7 @@ class AdminBookingController extends Controller
         $stats = [
             'total'      => Booking::count(),
             'pending'    => Booking::pending()->count(),
+            'confirmed'  => Booking::confirmed()->count(),
             'pendapatan' => Booking::whereIn('status', ['confirmed', 'completed', 'editing', 'done'])
                 ->sum('total_price'),
         ];
@@ -45,30 +55,50 @@ class AdminBookingController extends Controller
     {
         $validated = $request->validate([
             'status'     => 'required|in:pending,confirmed,rejected,completed,editing,done',
+            'start_date' => 'required|date',
+            'end_date'   => 'required|date|after:start_date',
             'notes'      => 'nullable|string|max:500',
             'drive_link' => 'nullable|url|max:500',
         ]);
 
-        // Cek konflik hanya saat confirm
-        if ($validated['status'] === 'confirmed') {
-            $conflict = Booking::hasConflict(
-                $booking->package_id,
-                $booking->start_date->toDateString(),
-                $booking->end_date->toDateString(),
-                excludeId: $booking->id
-            );
+        // Cek konflik tanggal jika status confirmed atau tanggal berubah
+        $oldStart = $booking->start_date->format('Y-m-d H:i:s');
+        $oldEnd   = $booking->end_date->format('Y-m-d H:i:s');
+
+        $dateChanged = $validated['start_date'] !== $oldStart
+            || $validated['end_date']   !== $oldEnd;
+
+        if ($validated['status'] === 'confirmed' || $dateChanged) {
+            $conflict = Booking::where('package_id', $booking->package_id)
+                ->whereNot('status', 'rejected')
+                ->where('id', '!=', $booking->id)
+                ->where('start_date', '<=', $validated['end_date'])
+                ->where('end_date', '>=', $validated['start_date'])
+                ->exists();
 
             if ($conflict) {
                 return redirect()->route('admin.bookings.index')
-                    ->with('error', 'Tidak bisa dikonfirmasi — tanggal bentrok dengan pesanan confirmed lain.');
+                    ->with('error', 'Tidak bisa disimpan — waktu bentrok dengan pesanan lain.');
             }
         }
 
-        $booking->update([
+        // Recalculate total jika tanggal berubah
+        $updateData = [
             'status'     => $validated['status'],
+            'start_date' => $validated['start_date'],
+            'end_date'   => $validated['end_date'],
             'notes'      => $validated['notes'] ?? $booking->notes,
-            'drive_link' => $validated['drive_link'] ?? $booking->drive_link,
-        ]);
+            'drive_link' => array_key_exists('drive_link', $validated)
+                ? $validated['drive_link']
+                : $booking->drive_link,
+        ];
+
+        if ($dateChanged) {
+            $billedHours             = $this->calcBilledHours($validated['start_date'], $validated['end_date']);
+            $updateData['total_price'] = $billedHours * $booking->package->price;
+        }
+
+        $booking->update($updateData);
 
         return redirect()->route('admin.bookings.index')
             ->with('success', 'Pesanan #ORD-' . str_pad($booking->id, 4, '0', STR_PAD_LEFT) . ' berhasil diperbarui.');

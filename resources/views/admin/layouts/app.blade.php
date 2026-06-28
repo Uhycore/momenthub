@@ -33,7 +33,7 @@
 
         /* ─── SIDEBAR ─────────────────────────────── */
         #sidebar {
-            width: 180px;
+            width: 220px;
             min-height: 100vh;
             background: #ffffff;
             border-right: 1px solid #e8e8e6;
@@ -47,13 +47,13 @@
 
         /* Brand */
         .sb-brand {
-            padding: 22px 18px 18px;
+            padding: 22px 20px 18px;
             border-bottom: 1px solid #eeeeec;
         }
 
         .sb-brand-name {
-            font-size: 13.5px;
-            font-weight: 700;
+            font-size: 14px;
+            font-weight: 800;
             letter-spacing: -0.01em;
             color: #111;
         }
@@ -68,7 +68,7 @@
 
         /* User section */
         .sb-user {
-            padding: 16px 18px;
+            padding: 14px 20px;
             border-bottom: 1px solid #eeeeec;
             display: flex;
             align-items: center;
@@ -76,8 +76,8 @@
         }
 
         .sb-avatar {
-            width: 36px;
-            height: 36px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
             background: #e8e8e6;
             display: flex;
@@ -92,10 +92,13 @@
         }
 
         .sb-user-name {
-            font-size: 12px;
+            font-size: 12.5px;
             font-weight: 600;
             color: #111;
             line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .sb-user-role {
@@ -106,51 +109,64 @@
 
         /* Nav */
         .sb-nav {
-            padding: 12px 0;
+            padding: 10px 0;
             flex: 1;
             overflow-y: auto;
+        }
+
+        .sb-nav-section {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #ccc;
+            padding: 14px 20px 6px;
         }
 
         .sb-nav a {
             display: flex;
             align-items: center;
-            gap: 9px;
-            padding: 9px 18px;
-            font-size: 11.5px;
+            gap: 10px;
+            padding: 10px 20px;
+            font-size: 12.5px;
             font-weight: 500;
-            color: #888;
+            color: #777;
             text-decoration: none;
             border-left: 2.5px solid transparent;
             transition: all 0.15s;
-            white-space: nowrap;
         }
 
         .sb-nav a:hover {
             color: #222;
             background: #f7f7f5;
+            border-left-color: #ddd;
         }
 
         .sb-nav a.active {
             color: #111;
-            font-weight: 600;
-            border-left-color: #e8a000;
-            background: #fdf8ee;
+            font-weight: 700;
+            border-left-color: #f5c518;
+            background: #fffbe6;
         }
 
         .sb-nav a svg {
             width: 15px;
             height: 15px;
             flex-shrink: 0;
-            opacity: 0.55;
+            opacity: 0.5;
+        }
+
+        .sb-nav a:hover svg {
+            opacity: 0.75;
         }
 
         .sb-nav a.active svg {
             opacity: 1;
         }
 
-        /* Sesi Baru button */
+        /* Bottom */
         .sb-bottom {
-            padding: 16px 14px;
+            padding: 14px 16px;
             border-top: 1px solid #eeeeec;
         }
 
@@ -158,18 +174,19 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 7px;
             width: 100%;
             padding: 10px 0;
             background: #111;
             color: #fff;
-            font-size: 11.5px;
+            font-size: 12px;
             font-weight: 600;
-            border-radius: 8px;
+            border-radius: 9px;
             text-decoration: none;
             border: none;
             cursor: pointer;
             transition: background 0.15s;
+            font-family: inherit;
         }
 
         .sb-new-btn:hover {
@@ -180,20 +197,20 @@
         #topbar {
             position: fixed;
             top: 0;
-            left: 180px;
+            left: 220px;
             right: 0;
-            height: 64px;
+            height: 60px;
             background: #F2F2F0;
             border-bottom: 1px solid #e4e4e2;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 36px;
+            padding: 0 32px;
             z-index: 40;
         }
 
         .topbar-title h1 {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             color: #111;
             letter-spacing: -0.02em;
@@ -209,42 +226,28 @@
         .topbar-right {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
         }
 
-        .topbar-bell {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            background: #fff;
-            border: 1px solid #e4e4e2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: border-color 0.15s;
-        }
-
-        .topbar-bell:hover {
-            border-color: #ccc;
-        }
-
-        .topbar-bell svg {
-            width: 16px;
-            height: 16px;
-            color: #555;
-        }
+        
 
         .topbar-user {
             display: flex;
             align-items: center;
             gap: 8px;
             cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 8px;
+            transition: background 0.13s;
+        }
+
+        .topbar-user:hover {
+            background: #e8e8e6;
         }
 
         .topbar-user-avatar {
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             background: #e4e4e2;
             display: flex;
@@ -253,19 +256,19 @@
         }
 
         .topbar-user-name {
-            font-size: 13px;
+            font-size: 12.5px;
             font-weight: 600;
             color: #111;
         }
 
         /* ─── MAIN ────────────────────────────────── */
         #main {
-            margin-left: 180px;
-            margin-top: 64px;
+            margin-left: 220px;
+            margin-top: 60px;
             flex: 1;
             padding: 32px 36px 48px;
-            width: calc(100% - 180px);
-            min-height: calc(100vh - 64px);
+            width: calc(100% - 220px);
+            min-height: calc(100vh - 60px);
         }
 
         /* Alerts */
@@ -298,20 +301,20 @@
 
         {{-- Brand --}}
         <div class="sb-brand">
-            <div class="sb-brand-name">{{ config('app.name', 'MomentHub') }}</div>
+            <div class="sb-brand-name">MomentHub</div>
             <div class="sb-brand-sub">Admin Panel</div>
         </div>
 
         {{-- User --}}
         <div class="sb-user">
             <div class="sb-avatar">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="1.8">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                     <circle cx="12" cy="7" r="4" />
                 </svg>
             </div>
-            <div>
+            <div style="min-width:0;">
                 <div class="sb-user-name">{{ Auth::user()->name ?? 'Admin' }}</div>
                 <div class="sb-user-role">MomentHub Admin</div>
             </div>
@@ -319,6 +322,8 @@
 
         {{-- Navigation --}}
         <nav class="sb-nav">
+
+            <div class="sb-nav-section">Menu</div>
 
             <a href="{{ route('admin.dashboard') }}"
                 class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
@@ -332,17 +337,19 @@
             </a>
 
             <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users*') ? 'active' : '' }}">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" stroke-linecap="round" stroke-linejoin="round" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 3.13a4 4 0 0 1 0 7.75" />
                 </svg>
                 Pengguna
             </a>
 
-            <a href="{{ route('admin.posts.index') }}"
-                class="{{ request()->routeIs('admin.posts*') ? 'active' : '' }}">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            <a href="{{ route('admin.posts.index') }}" class="{{ request()->routeIs('admin.posts*') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
                         d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M14 8h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 Manajemen Postingan
@@ -350,29 +357,29 @@
 
             <a href="{{ route('admin.price.index') }}"
                 class="{{ request()->routeIs('admin.price*') ? 'active' : '' }}">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 Manajemen Harga
             </a>
 
             <a href="{{ route('admin.bookings.index') }}"
                 class="{{ request()->routeIs('admin.bookings*') ? 'active' : '' }}">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 Manajemen Pemesanan
             </a>
 
         </nav>
 
-        {{-- CTA Button --}}
+        {{-- Logout --}}
         <div class="sb-bottom">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="sb-new-btn" style="width:100%; border:none; cursor:pointer;">
+                <button type="submit" class="sb-new-btn">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -391,15 +398,10 @@
             <p>@yield('page-subtitle', now()->translatedFormat('l, d F Y'))</p>
         </div>
         <div class="topbar-right">
-            <div class="topbar-bell">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-                </svg>
-            </div>
-            <div class="topbar-user" onclick="document.getElementById('logout-form').submit()">
+            
+            <div class="topbar-user" onclick="document.querySelector('.sb-bottom form').submit()">
                 <div class="topbar-user-avatar">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888"
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#888"
                         stroke-width="2">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                         <circle cx="12" cy="7" r="4" />

@@ -22,25 +22,54 @@ class GuestController extends Controller
             ->get();
 
         // ── Semua booking (bukan filter per user) untuk kalender publik ──
-        $calendarEvents = Booking::with(['user', 'package'])
-            ->whereIn('status', ['pending', 'confirmed'])
+        // $calendarEvents = Booking::with(['user', 'package'])
+        //     ->whereIn('status', ['pending', 'confirmed'])
+        //     ->get()
+        //     ->map(fn($b) => [
+        //         'id'      => $b->id,
+        //         // Nama pemesan tampil di bar event
+        //         'title'   => $b->user->name ?? 'Unknown',
+        //         'package' => $b->package->name ?? '-',
+        //         'status'  => $b->status_label,
+        //         'start'   => $b->start_date->toDateString(),
+        //         // FullCalendar end exclusive → +1 hari
+        //         'end'     => $b->end_date->copy()->addDay()->toDateString(),
+        //         'color'   => match ($b->status) {
+        //             'confirmed' => '#1a6e38',
+        //             default     => '#b58900',
+        //         },
+        //         'textColor' => '#fff',
+        //     ])
+        //     ->values();
+
+
+        $calendarEvents = \App\Models\Booking::with(['user', 'package'])
+            ->whereNot('status', 'rejected')
             ->get()
             ->map(fn($b) => [
-                'id'      => $b->id,
-                // Nama pemesan tampil di bar event
-                'title'   => $b->user->name ?? 'Unknown',
-                'package' => $b->package->name ?? '-',
-                'status'  => $b->status_label,
-                'start'   => $b->start_date->toDateString(),
-                // FullCalendar end exclusive → +1 hari
-                'end'     => $b->end_date->copy()->addDay()->toDateString(),
-                'color'   => match ($b->status) {
+                'title' => $b->user->name ?? 'Klien',
+                'start' => $b->start_date->toIso8601String(),
+                'end'   => $b->end_date->toIso8601String(),
+                'color' => match ($b->status) {
                     'confirmed' => '#1a6e38',
-                    default     => '#b58900',
+                    'completed' => '#1e40af',
+                    'editing'   => '#5b21b6',
+                    'done'      => '#166534',
+                    default     => '#b58900', // pending
                 },
-                'textColor' => '#fff',
+                'extendedProps' => [
+                    'package' => $b->package->name ?? '-',
+                    'status'  => match ($b->status) {
+                        'confirmed' => 'Dikonfirmasi',
+                        'completed' => 'Terlaksana',
+                        'editing'   => 'Editing',
+                        'done'      => 'Selesai',
+                        default     => 'Menunggu',
+                    },
+                ],
             ])
-            ->values();
+            ->toArray();
+
 
         return view('dashboard', compact('featuredPosts', 'packages', 'calendarEvents'));
     }

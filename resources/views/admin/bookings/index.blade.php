@@ -6,7 +6,6 @@
 @section('content')
 
     <style>
-        /* ── Stat cards ── */
         .bk-stat-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -39,6 +38,10 @@
             margin-bottom: 6px;
         }
 
+        .bk-stat-value.sm {
+            font-size: 18px;
+        }
+
         .bk-stat-sub {
             font-size: 11px;
             font-weight: 600;
@@ -59,7 +62,7 @@
             color: #aaa;
         }
 
-        /* ── Toolbar ── */
+        /* Toolbar */
         .bk-toolbar {
             display: flex;
             align-items: center;
@@ -74,7 +77,6 @@
             letter-spacing: 0.1em;
             text-transform: uppercase;
             color: #bbb;
-            margin-right: 2px;
         }
 
         .bk-select {
@@ -98,17 +100,15 @@
             border-color: #f5c518;
         }
 
-        /* ── Card wrapper: overflow visible supaya dropdown tidak terpotong ── */
+        /* Card */
         .bk-card {
             background: #fff;
             border-radius: 14px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
             border: 1px solid #f0f0ee;
             overflow: visible;
-            /* PENTING: jangan hidden */
         }
 
-        /* ── Table ── */
         .bk-table-wrap {
             overflow-x: auto;
             border-radius: 14px 14px 0 0;
@@ -158,7 +158,6 @@
             vertical-align: middle;
         }
 
-        /* ── Cell styles ── */
         .bk-avatar {
             width: 32px;
             height: 32px;
@@ -191,17 +190,25 @@
             font-family: monospace;
         }
 
-        .bk-date {
+        /* Datetime cell */
+        .bk-datetime-main {
             font-size: 12px;
-            color: #555;
+            color: #333;
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        .bk-datetime-sub {
+            font-size: 10.5px;
+            color: #aaa;
+            margin-top: 2px;
             white-space: nowrap;
         }
 
-        .bk-date-sub {
-            font-size: 10.5px;
-            color: #aaa;
-            margin-top: 1px;
-            white-space: nowrap;
+        .bk-datetime-sep {
+            font-size: 10px;
+            color: #ccc;
+            margin: 0 3px;
         }
 
         .bk-total {
@@ -209,6 +216,12 @@
             font-weight: 700;
             color: #111;
             white-space: nowrap;
+        }
+
+        .bk-total-sub {
+            font-size: 10px;
+            color: #bbb;
+            margin-top: 1px;
         }
 
         .bk-pkg-tag {
@@ -224,7 +237,7 @@
             white-space: nowrap;
         }
 
-        /* ── Status badges ── */
+        /* Badges */
         .bk-badge {
             display: inline-block;
             font-size: 9.5px;
@@ -270,7 +283,7 @@
             border: 1px solid #6ee7b7;
         }
 
-        /* ── Action buttons ── */
+        /* Action buttons */
         .bk-act-btn {
             width: 28px;
             height: 28px;
@@ -316,27 +329,7 @@
             color: #e53e3e;
         }
 
-        /* ── Proof link ── */
-        .bk-proof-link {
-            font-size: 11px;
-            font-weight: 600;
-            color: #c89a00;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .bk-proof-link:hover {
-            text-decoration: underline;
-        }
-
-        .bk-proof-link svg {
-            width: 11px;
-            height: 11px;
-        }
-
-        /* ── Pagination ── */
+        /* Pagination */
         .bk-pagination {
             display: flex;
             align-items: center;
@@ -388,7 +381,7 @@
             cursor: default;
         }
 
-        /* ── Empty ── */
+        /* Empty */
         .bk-empty {
             text-align: center;
             padding: 60px 20px;
@@ -412,13 +405,7 @@
         <div class="bk-stat">
             <div class="bk-stat-label">Total Pesanan</div>
             <div class="bk-stat-value">{{ number_format($stats['total']) }}</div>
-            <div class="bk-stat-sub green">
-                <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                </svg>
-                12.5%
-            </div>
+            <div class="bk-stat-sub gray">Semua waktu</div>
         </div>
         <div class="bk-stat">
             <div class="bk-stat-label">Menunggu</div>
@@ -433,30 +420,20 @@
             </div>
         </div>
         <div class="bk-stat">
-            <div class="bk-stat-label">Pendapatan</div>
-            <div class="bk-stat-value" style="font-size:22px;">
-                Rp {{ number_format($stats['pendapatan'] / 1000000, 1, '.', ',') }}M
-            </div>
+            <div class="bk-stat-label">Dikonfirmasi</div>
+            <div class="bk-stat-value">{{ $stats['confirmed'] }}</div>
             <div class="bk-stat-sub green">
                 <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                     stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
-                8.2%
+                Aktif
             </div>
         </div>
         <div class="bk-stat">
-            <div class="bk-stat-label">Kepuasan</div>
-            <div class="bk-stat-value">4.9<span style="font-size:16px;color:#aaa;">/5.0</span></div>
-            <div class="bk-stat-sub gray">
-                <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955
-                                 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622
-                                 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-                98% Terverifikasi
-            </div>
+            <div class="bk-stat-label">Total Pendapatan</div>
+            <div class="bk-stat-value sm">Rp {{ number_format($stats['pendapatan'], 0, ',', '.') }}</div>
+            <div class="bk-stat-sub gray">Confirmed & selesai</div>
         </div>
     </div>
 
@@ -469,8 +446,10 @@
                 <select name="status" class="bk-select" onchange="this.form.submit()">
                     <option value="all" {{ $status === 'all' ? 'selected' : '' }}>Semua Status</option>
                     <option value="pending" {{ $status === 'pending' ? 'selected' : '' }}>Menunggu</option>
-                    <option value="confirmed" {{ $status === 'confirmed' ? 'selected' : '' }}>Dikonfirmasi</option>
-                    <option value="completed" {{ $status === 'completed' ? 'selected' : '' }}>Selesai</option>
+                    <option value="confirmed"{{ $status === 'confirmed' ? 'selected' : '' }}>Dikonfirmasi</option>
+                    <option value="editing" {{ $status === 'editing' ? 'selected' : '' }}>Editing</option>
+                    <option value="completed"{{ $status === 'completed' ? 'selected' : '' }}>Terlaksana</option>
+                    <option value="done" {{ $status === 'done' ? 'selected' : '' }}>Selesai</option>
                     <option value="rejected" {{ $status === 'rejected' ? 'selected' : '' }}>Ditolak</option>
                 </select>
             </div>
@@ -494,8 +473,8 @@
                     <tr>
                         <th>ID Pesanan</th>
                         <th>Klien</th>
-                        <th>Tanggal Sesi</th>
-                        <th>Paket Layanan</th>
+                        <th>Waktu Sesi</th>
+                        <th>Paket</th>
                         <th>Total</th>
                         <th>Status</th>
                         <th style="text-align:right;">Aksi</th>
@@ -510,6 +489,7 @@
                                 ->map(fn($w) => strtoupper(substr($w, 0, 1)))
                                 ->take(2)
                                 ->join('');
+
                             $badgeClass = match ($booking->status) {
                                 'confirmed' => 'bk-badge-confirmed',
                                 'rejected' => 'bk-badge-rejected',
@@ -526,13 +506,20 @@
                                 'done' => 'Done',
                                 default => 'Pending',
                             };
+
                             $orderId = str_pad($booking->id, 4, '0', STR_PAD_LEFT);
+                            $sameDay = $booking->start_date->toDateString() === $booking->end_date->toDateString();
+
+                            // Hitung durasi yang ditagih
+                            $billedHours = (int) ceil($booking->start_date->diffInMinutes($booking->end_date) / 60);
                         @endphp
                         <tr>
+                            {{-- ID --}}
                             <td>
                                 <div class="bk-order-id">#ORD-{{ $orderId }}</div>
                             </td>
 
+                            {{-- Klien --}}
                             <td>
                                 <div style="display:flex;align-items:center;gap:10px;">
                                     <div class="bk-avatar" style="background:{{ $color }}">{{ $initials }}
@@ -544,28 +531,55 @@
                                 </div>
                             </td>
 
+                            {{-- Waktu Sesi (tanggal + jam) --}}
                             <td>
-                                <div class="bk-date">{{ $booking->start_date->format('d M Y') }}</div>
-                                <div class="bk-date-sub">s/d {{ $booking->end_date->format('d M Y') }}</div>
+                                @if ($sameDay)
+                                    {{-- Sesi 1 hari --}}
+                                    <div class="bk-datetime-main">
+                                        {{ $booking->start_date->format('d M Y') }}
+                                    </div>
+                                    <div class="bk-datetime-sub">
+                                        {{ $booking->start_date->format('H:i') }}
+                                        <span class="bk-datetime-sep">–</span>
+                                        {{ $booking->end_date->format('H:i') }} WIB
+                                    </div>
+                                @else
+                                    {{-- Sesi beda hari --}}
+                                    <div class="bk-datetime-main">
+                                        {{ $booking->start_date->format('d M Y, H:i') }}
+                                    </div>
+                                    <div class="bk-datetime-sub">
+                                        s/d {{ $booking->end_date->format('d M Y, H:i') }} WIB
+                                    </div>
+                                @endif
                             </td>
 
+                            {{-- Paket --}}
                             <td><span class="bk-pkg-tag">{{ $booking->package->name ?? '-' }}</span></td>
 
+                            {{-- Total --}}
                             <td>
                                 <div class="bk-total">{{ $booking->formatted_total }}</div>
+                                <div class="bk-total-sub">{{ $billedHours }} jam</div>
                             </td>
 
+                            {{-- Status --}}
                             <td><span class="bk-badge {{ $badgeClass }}">{{ $badgeLabel }}</span></td>
 
+                            {{-- Aksi --}}
                             <td>
                                 <div style="display:flex;gap:5px;justify-content:flex-end;">
-                                    {{-- Edit --}}
-                                    <button type="button" class="bk-act-btn edit" title="Update Status"
+                                    <button type="button" class="bk-act-btn edit" title="Update"
                                         onclick="openBkUpdateModal(
                                             {{ $booking->id }},
                                             '{{ addslashes($booking->user->name ?? '-') }}',
+                                            '{{ addslashes($booking->user->email ?? '') }}',
                                             '{{ addslashes($booking->package->name ?? '-') }}',
                                             '{{ $booking->status }}',
+                                            '{{ $booking->start_date->format('Y-m-d\TH:i') }}',
+                                            '{{ $booking->end_date->format('Y-m-d\TH:i') }}',
+                                            '{{ $booking->formatted_total }}',
+                                            {{ $billedHours }},
                                             '{{ addslashes($booking->notes ?? '') }}',
                                             '{{ addslashes($booking->drive_link ?? '') }}',
                                             '{{ $booking->payment_proof_url ?? '' }}'
@@ -573,21 +587,19 @@
                                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5
-                                                         m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                       m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg>
                                     </button>
 
-                                    {{-- Hapus --}}
                                     <form method="POST" action="{{ route('admin.bookings.destroy', $booking) }}"
-                                        onsubmit="return confirm('Hapus pesanan #ORD-{{ str_pad($booking->id, 4, '0', STR_PAD_LEFT) }}?')"
+                                        onsubmit="return confirm('Hapus pesanan #ORD-{{ $orderId }}?')"
                                         style="display:inline;">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="bk-act-btn del" title="Hapus">
                                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                                 stroke-width="2">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862
-                                                             a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6
-                                                             m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7
+                                                           m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                             </svg>
                                         </button>
                                     </form>
@@ -599,9 +611,8 @@
                             <td colspan="7">
                                 <div class="bk-empty">
                                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7
-                                                     a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2
+                                                   M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                                     </svg>
                                     <p>Tidak ada pesanan ditemukan.</p>
                                 </div>
@@ -612,27 +623,23 @@
             </table>
         </div>
 
-        {{-- ── Pagination ── --}}
+        {{-- Pagination --}}
         <div class="bk-pagination">
             @if ($bookings->total() > 0)
-                <span>
-                    Menampilkan {{ $bookings->firstItem() ?? 0 }}–{{ $bookings->lastItem() ?? 0 }}
-                    dari {{ $bookings->total() }} pesanan
-                </span>
+                <span>Menampilkan {{ $bookings->firstItem() ?? 0 }}–{{ $bookings->lastItem() ?? 0 }}
+                    dari {{ $bookings->total() }} pesanan</span>
             @else
                 <span>Tidak ada pesanan</span>
             @endif
 
             @if ($bookings->hasPages())
                 <div class="bk-page-btns">
-                    {{-- Prev --}}
                     @if ($bookings->onFirstPage())
                         <span class="bk-page-btn disabled">‹</span>
                     @else
                         <a href="{{ $bookings->previousPageUrl() }}" class="bk-page-btn">‹</a>
                     @endif
 
-                    {{-- Page numbers --}}
                     @php
                         $last = $bookings->lastPage();
                         $cur = $bookings->currentPage();
@@ -648,7 +655,6 @@
                         @endif
                     @endfor
 
-                    {{-- Next --}}
                     @if ($bookings->hasMorePages())
                         <a href="{{ $bookings->nextPageUrl() }}" class="bk-page-btn">›</a>
                     @else
@@ -661,10 +667,6 @@
         </div>
     </div>
 
-
-    {{-- ── UPDATE MODAL ── --}}
     @include('admin.bookings.modal')
-
-    <script></script>
 
 @endsection

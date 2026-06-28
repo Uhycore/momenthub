@@ -228,7 +228,7 @@
     <footer
         class="py-5 px-6 flex items-center justify-between text-[11px] text-gray-400 uppercase
                    tracking-widest border-t border-gray-200 bg-white">
-        <span>© 2024 MomentHub. Editorial Photography Curator.</span>
+        <span>© 2026 MomentHub. Editorial Photography Curator.</span>
         <div class="flex gap-5">
             <a href="#" class="hover:text-gray-600 transition-colors">Privacy</a>
             <a href="#" class="hover:text-gray-600 transition-colors">Terms</a>

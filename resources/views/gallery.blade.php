@@ -278,9 +278,9 @@
                                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"
                                                 d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2
-                                                                                             l1.586-1.586a2 2 0 012.828 0L20 14M14 8h.01
-                                                                                             M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6
-                                                                                             a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                                                                     l1.586-1.586a2 2 0 012.828 0L20 14M14 8h.01
+                                                                                                     M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6
+                                                                                                     a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                         </svg>
                                     </div>
                                 @endif
@@ -306,8 +306,8 @@
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.2">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586
-                                                                             a2 2 0 012.828 0L20 14M14 8h.01M6 20h12a2 2 0 002-2V6
-                                                                             a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                                                     a2 2 0 012.828 0L20 14M14 8h.01M6 20h12a2 2 0 002-2V6
+                                                                                     a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                         <p>Belum ada karya yang dipublikasikan.</p>
                     </div>
@@ -316,24 +316,17 @@
             </div>
         </div>
 
-        {{-- ── CTA Section ──────────────────────────────────────────── --}}
-        <div class="gal-cta">
-            <div style="max-width:500px; margin:0 auto;">
-                <h2>Visi Anda, Lensa Kami.</h2>
-                <p>
-                    Ready to transform your moments into a permanent legacy?
-                    Join our exclusive roster of clients and work with the industry's finest.
-                </p>
-                <div class="gal-cta-btns">
-                    <a href="{{ route('price') }}" class="gal-btn-primary">
-                        Book a Session →
-                    </a>
-                    <a href="{{ route('price') }}" class="gal-btn-secondary">
-                        View Pricing
-                    </a>
-                </div>
+        {{-- ===================== FOOTER ===================== --}}
+        <footer class="bg-gray-900 border-t border-gray-800 pt-5 pb-5">
+            <div class="max-w-6xl mx-auto px-6">
+
+                <span class="text-[10px] text-gray-600 uppercase tracking-widest">© 2024 MomentHub. Editorial
+                    Photography Curator.</span>
+
+
+
             </div>
-        </div>
+        </footer>
 
     </div>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>

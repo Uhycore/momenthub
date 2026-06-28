@@ -17,13 +17,14 @@ class Booking extends Model
         'end_date',
         'status',
         'payment_proof',
+        'drive_link',
         'notes',
         'total_price',
     ];
 
     protected $casts = [
-        'start_date'  => 'date',
-        'end_date'    => 'date',
+        'start_date'  => 'datetime',
+        'end_date'    => 'datetime',
         'total_price' => 'integer',
     ];
 
@@ -45,10 +46,12 @@ class Booking extends Model
     {
         return $query->where('status', 'pending');
     }
+
     public function scopeConfirmed($query)
     {
         return $query->where('status', 'confirmed');
     }
+
     public function scopeRejected($query)
     {
         return $query->where('status', 'rejected');
@@ -56,10 +59,6 @@ class Booking extends Model
 
     // ── Static helpers ─────────────────────────────
 
-    /**
-     * Cek konflik hanya dengan booking berstatus confirmed.
-     * Overlap: existing_start <= new_end AND existing_end >= new_start
-     */
     public static function hasConflict(
         int $packageId,
         string $startDate,
@@ -67,10 +66,8 @@ class Booking extends Model
         ?int $excludeId = null
     ): bool {
         return static::where('package_id', $packageId)
-            ->where('status', ['pending', 'confirmed'])
             ->where('start_date', '<=', $endDate)
             ->where('end_date', '>=', $startDate)
-            ->when($excludeId, fn($q) => $q->where('id', '!=', $excludeId))
             ->exists();
     }
 

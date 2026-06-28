@@ -1,7 +1,4 @@
-
-
 <style>
-    /* ── Overlay ────────────────────────────────── */
     #bk-overlay {
         position: fixed;
         inset: 0;
@@ -22,7 +19,6 @@
         pointer-events: all;
     }
 
-    /* ── Dialog ─────────────────────────────────── */
     #bk-modal {
         background: #fff;
         border-radius: 18px;
@@ -40,7 +36,6 @@
         transform: translateY(0) scale(1);
     }
 
-    /* ── Header ─────────────────────────────────── */
     .bk-header {
         display: flex;
         align-items: flex-start;
@@ -100,12 +95,10 @@
         height: 13px;
     }
 
-    /* ── Body ───────────────────────────────────── */
     .bk-body {
         padding: 22px 26px;
     }
 
-    /* Package summary */
     .bk-pkg-row {
         display: flex;
         align-items: center;
@@ -136,7 +129,6 @@
         white-space: nowrap;
     }
 
-    /* Form groups */
     .bk-group {
         margin-bottom: 15px;
     }
@@ -195,7 +187,66 @@
         gap: 12px;
     }
 
-    /* File input */
+    /* ── Estimasi harga ── */
+    #bk-estimate {
+        display: none;
+        background: #f9f9f7;
+        border: 1.5px solid #eeeeec;
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-top: 10px;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    #bk-estimate.show {
+        display: flex;
+    }
+
+    .bk-est-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 12px;
+        color: #555;
+        padding: 3px 0;
+    }
+
+    .bk-est-row.total {
+        font-size: 13.5px;
+        font-weight: 800;
+        color: #111;
+        border-top: 1px solid #e8e8e6;
+        margin-top: 6px;
+        padding-top: 8px;
+    }
+
+    /* Peringatan pembulatan */
+    #bk-round-warn {
+        display: none;
+        align-items: flex-start;
+        gap: 7px;
+        font-size: 11px;
+        color: #92400e;
+        background: #fffbe6;
+        border: 1px solid #f5e08a;
+        border-radius: 8px;
+        padding: 8px 11px;
+        margin-top: 8px;
+        line-height: 1.5;
+    }
+
+    #bk-round-warn.show {
+        display: flex;
+    }
+
+    #bk-round-warn svg {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+        margin-top: 1px;
+    }
+
     .bk-file-input {
         width: 100%;
         padding: 8px 10px;
@@ -233,7 +284,6 @@
         background: #e4e4e2;
     }
 
-    /* Check availability button */
     .bk-check-btn {
         width: 100%;
         padding: 11px;
@@ -265,7 +315,6 @@
         cursor: not-allowed;
     }
 
-    /* Availability result */
     .bk-avail {
         display: none;
         padding: 11px 14px;
@@ -299,14 +348,12 @@
         flex-shrink: 0;
     }
 
-    /* Divider */
     .bk-divider {
         border: none;
         border-top: 1px solid #f0f0ee;
         margin: 18px 0;
     }
 
-    /* ── Footer ─────────────────────────────────── */
     .bk-footer {
         display: flex;
         gap: 8px;
@@ -363,7 +410,6 @@
         height: 13px;
     }
 
-    /* Spinner */
     @keyframes bk-spin {
         to {
             transform: rotate(360deg);
@@ -390,7 +436,6 @@
     }
 </style>
 
-{{-- ═══ MODAL ════════════════════════════════════════════════ --}}
 <div id="bk-overlay" onclick="handleBkOverlay(event)">
     <div id="bk-modal" role="dialog" aria-modal="true" aria-labelledby="bk-title">
 
@@ -417,30 +462,60 @@
                 <div class="bk-pkg-row">
                     <div>
                         <div class="bk-pkg-name" id="bk-pkg-name">—</div>
-                        <div class="bk-pkg-sub">Paket yang dipilih</div>
+                        <div class="bk-pkg-sub" id="bk-pkg-sub">Paket yang dipilih</div>
                     </div>
                     <div class="bk-pkg-price" id="bk-pkg-price">—</div>
                 </div>
 
-                {{-- Tanggal --}}
+                {{-- Waktu Mulai & Selesai --}}
                 <div class="bk-row-2 bk-group">
                     <div>
                         <label class="bk-label" for="bk-start">
-                            Tanggal Mulai <span class="req">*</span>
+                            Mulai <span class="req">*</span>
                         </label>
-                        <input type="date" id="bk-start" name="start_date" class="bk-input"
+                        <input type="datetime-local" id="bk-start" name="start_date" class="bk-input"
                             onchange="onDateChange()">
                     </div>
                     <div>
                         <label class="bk-label" for="bk-end">
-                            Tanggal Selesai <span class="req">*</span>
+                            Selesai <span class="req">*</span>
                         </label>
-                        <input type="date" id="bk-end" name="end_date" class="bk-input" onchange="onDateChange()">
+                        <input type="datetime-local" id="bk-end" name="end_date" class="bk-input"
+                            onchange="onDateChange()">
                     </div>
                 </div>
 
+                {{-- Estimasi harga (muncul otomatis setelah pilih waktu) --}}
+                <div id="bk-estimate">
+                    <div class="bk-est-row">
+                        <span>Durasi aktual</span>
+                        <span id="bk-est-actual">—</span>
+                    </div>
+                    <div class="bk-est-row">
+                        <span>Ditagih</span>
+                        <span id="bk-est-billed">—</span>
+                    </div>
+                    <div class="bk-est-row">
+                        <span>Tarif</span>
+                        <span id="bk-est-rate">—</span>
+                    </div>
+                    <div class="bk-est-row total">
+                        <span>Estimasi Total</span>
+                        <span id="bk-est-total">—</span>
+                    </div>
+                </div>
+
+                {{-- Peringatan pembulatan --}}
+                <div id="bk-round-warn">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                    </svg>
+                    <span id="bk-round-warn-text"></span>
+                </div>
+
                 {{-- Cek Ketersediaan --}}
-                <div class="bk-group">
+                <div class="bk-group" style="margin-top:14px;">
                     <button type="button" id="bk-check-btn" class="bk-check-btn" onclick="checkAvailability()">
                         <div class="bk-spin" id="bk-spin"></div>
                         <svg id="bk-check-icon" width="15" height="15" fill="none" stroke="currentColor"
@@ -451,7 +526,6 @@
                         <span id="bk-check-label">Cek Ketersediaan</span>
                     </button>
 
-                    {{-- Hasil --}}
                     <div class="bk-avail" id="bk-avail">
                         <svg id="bk-avail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             stroke-width="2.5"></svg>
@@ -483,9 +557,7 @@
 
         {{-- Footer --}}
         <div class="bk-footer">
-            <button type="button" class="bk-btn bk-btn-cancel" onclick="closeBkModal()">
-                Batal
-            </button>
+            <button type="button" class="bk-btn bk-btn-cancel" onclick="closeBkModal()">Batal</button>
             <button type="button" id="bk-submit-btn" class="bk-btn bk-btn-submit" onclick="submitBk()" disabled>
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
@@ -499,32 +571,39 @@
 </div>
 
 <script>
-    /* ════════════════════════════════════════════════════
-   BOOKING MODAL — JS
-   ════════════════════════════════════════════════════ */
-
     let bkAvailable = false;
+    let bkPricePerHour = 0;
 
-    // ── Open ────────────────────────────────────────────
-    function openBkModal(pkgId, pkgName, pkgPrice) {
+    // ── Format Rupiah ───────────────────────────────
+    function fmtRp(n) {
+        return 'Rp ' + parseInt(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    // ── Open ────────────────────────────────────────
+    function openBkModal(pkgId, pkgName, pkgPrice, pkgPriceRaw) {
         resetBk();
+
+        bkPricePerHour = parseInt(pkgPriceRaw) || parseInt((pkgPrice || '').replace(/\D/g, '')) || 0;
 
         document.getElementById('bk-pkg-id').value = pkgId;
         document.getElementById('bk-pkg-name').textContent = pkgName;
-        document.getElementById('bk-pkg-price').textContent = pkgPrice;
+        document.getElementById('bk-pkg-price').textContent = pkgPrice; // formatted
+        document.getElementById('bk-pkg-sub').textContent = pkgPrice + '/jam';
         document.getElementById('bk-title').textContent = pkgName;
+        document.getElementById('bk-est-rate').textContent = pkgPrice + '/jam';
 
-        // Min = hari ini
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('bk-start').min = today;
-        document.getElementById('bk-end').min = today;
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        const minVal = now.toISOString().slice(0, 16);
+        document.getElementById('bk-start').min = minVal;
+        document.getElementById('bk-end').min = minVal;
 
         document.getElementById('bk-overlay').classList.add('open');
         document.body.style.overflow = 'hidden';
         setTimeout(() => document.getElementById('bk-start').focus(), 260);
     }
 
-    // ── Close ───────────────────────────────────────────
+    // ── Close ───────────────────────────────────────
     function closeBkModal() {
         document.getElementById('bk-overlay').classList.remove('open');
         document.body.style.overflow = '';
@@ -538,48 +617,83 @@
         if (e.key === 'Escape') closeBkModal();
     });
 
-    // ── Reset ───────────────────────────────────────────
+    // ── Reset ───────────────────────────────────────
     function resetBk() {
         document.getElementById('bk-form').reset();
         bkAvailable = false;
         document.getElementById('bk-submit-btn').disabled = true;
         document.getElementById('bk-check-label').textContent = 'Cek Ketersediaan';
         document.getElementById('bk-check-icon').style.display = '';
-
-        const avail = document.getElementById('bk-avail');
-        avail.classList.remove('show', 'ok', 'err');
-
-        ['bk-start', 'bk-end'].forEach(id => {
-            document.getElementById(id).classList.remove('error');
-        });
+        document.getElementById('bk-avail').classList.remove('show', 'ok', 'err');
+        document.getElementById('bk-estimate').classList.remove('show');
+        document.getElementById('bk-round-warn').classList.remove('show');
+        ['bk-start', 'bk-end'].forEach(id => document.getElementById(id).classList.remove('error'));
     }
 
-    // Saat tanggal berubah → reset hasil cek
-    function onDateChange() {
-        bkAvailable = false;
-        document.getElementById('bk-submit-btn').disabled = true;
-
-        const avail = document.getElementById('bk-avail');
-        avail.classList.remove('show', 'ok', 'err');
-        document.getElementById('bk-check-label').textContent = 'Cek Ketersediaan';
-
-        // Sync end min
+    // ── Kalkulasi estimasi (live, tanpa fetch) ──────
+    function calcEstimate() {
         const start = document.getElementById('bk-start').value;
-        if (start) {
-            document.getElementById('bk-end').min = start;
-            if (document.getElementById('bk-end').value < start) {
-                document.getElementById('bk-end').value = start;
-            }
+        const end = document.getElementById('bk-end').value;
+        const est = document.getElementById('bk-estimate');
+        const warn = document.getElementById('bk-round-warn');
+
+        if (!start || !end || end <= start) {
+            est.classList.remove('show');
+            warn.classList.remove('show');
+            return;
+        }
+
+        const totalMins = Math.round((new Date(end) - new Date(start)) / 60000);
+        const billedHrs = Math.ceil(totalMins / 60);
+        const totalPrice = billedHrs * bkPricePerHour;
+
+        const h = Math.floor(totalMins / 60);
+        const m = totalMins % 60;
+        const actualStr = h > 0 ?
+            `${h} jam${m > 0 ? ` ${m} menit` : ''}` :
+            `${m} menit`;
+
+        document.getElementById('bk-est-actual').textContent = actualStr;
+        document.getElementById('bk-est-billed').textContent = `${billedHrs} jam`;
+        document.getElementById('bk-est-total').textContent = fmtRp(totalPrice);
+        est.classList.add('show');
+
+        // Peringatan kalau bukan bulat jam
+        if (totalMins % 60 !== 0) {
+            document.getElementById('bk-round-warn-text').textContent =
+                `Durasi ${actualStr} dibulatkan ke atas menjadi ${billedHrs} jam. ` +
+                `Harga tetap dihitung per jam penuh.`;
+            warn.classList.add('show');
+        } else {
+            warn.classList.remove('show');
         }
     }
 
-    // ── Check Availability ──────────────────────────────
+    // ── Saat datetime berubah ───────────────────────
+    function onDateChange() {
+        bkAvailable = false;
+        document.getElementById('bk-submit-btn').disabled = true;
+        document.getElementById('bk-avail').classList.remove('show', 'ok', 'err');
+        document.getElementById('bk-check-label').textContent = 'Cek Ketersediaan';
+
+        const start = document.getElementById('bk-start').value;
+        if (start) {
+            document.getElementById('bk-end').min = start;
+            if (document.getElementById('bk-end').value &&
+                document.getElementById('bk-end').value <= start) {
+                document.getElementById('bk-end').value = '';
+            }
+        }
+
+        calcEstimate();
+    }
+
+    // ── Check Availability ──────────────────────────
     async function checkAvailability() {
         const pkgId = document.getElementById('bk-pkg-id').value;
         const start = document.getElementById('bk-start').value;
         const end = document.getElementById('bk-end').value;
 
-        // Validasi input
         let valid = true;
         ['bk-start', 'bk-end'].forEach(id => {
             const el = document.getElementById(id);
@@ -590,12 +704,11 @@
         });
         if (!valid) return;
 
-        if (end < start) {
-            setAvailResult(false, 'Tanggal selesai tidak boleh sebelum tanggal mulai.');
+        if (end <= start) {
+            setAvailResult(false, 'Waktu selesai harus setelah waktu mulai.');
             return;
         }
 
-        // Loading
         const btn = document.getElementById('bk-check-btn');
         const spin = document.getElementById('bk-spin');
         const icon = document.getElementById('bk-check-icon');
@@ -616,8 +729,8 @@
                 },
                 body: JSON.stringify({
                     package_id: pkgId,
-                    start_date: start,
-                    end_date: end,
+                    start_date: start.replace('T', ' ') + ':00',
+                    end_date: end.replace('T', ' ') + ':00',
                 }),
             });
 
@@ -650,11 +763,10 @@
             '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>';
     }
 
-    // ── Submit ──────────────────────────────────────────
+    // ── Submit ──────────────────────────────────────
     function submitBk() {
         if (!bkAvailable) return;
 
-        // Validasi file size jika ada
         const fileInput = document.getElementById('bk-proof');
         if (fileInput.files[0] && fileInput.files[0].size > 5 * 1024 * 1024) {
             alert('Ukuran file bukti pembayaran maksimal 5 MB.');

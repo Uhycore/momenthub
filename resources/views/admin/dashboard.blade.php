@@ -68,10 +68,16 @@
             color: #1d8a45;
         }
 
-        .stat-badge.green-text {
-            color: #1d8a45;
+        .stat-badge.red {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .stat-badge.amber {
+            color: #c89a00;
             font-size: 11px;
             font-weight: 600;
+            background: none;
         }
 
         .stat-badge.dark-badge {
@@ -90,7 +96,7 @@
         }
 
         .stat-value.sm {
-            font-size: 22px;
+            font-size: 20px;
         }
 
         .stat-card.dark .stat-value {
@@ -105,12 +111,6 @@
 
         .stat-card.dark .stat-label {
             color: rgba(255, 255, 255, 0.5);
-        }
-
-        .stat-sub {
-            font-size: 11px;
-            color: #aaa;
-            margin-top: 4px;
         }
 
         /* ─── BOTTOM GRID ─────────────────────────── */
@@ -191,13 +191,12 @@
             width: 34px;
             height: 34px;
             border-radius: 50%;
-            background: #e8e8e6;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 11px;
             font-weight: 700;
-            color: #555;
+            color: #fff;
             flex-shrink: 0;
         }
 
@@ -208,7 +207,7 @@
             line-height: 1.2;
         }
 
-        .client-loc {
+        .client-sub {
             font-size: 11px;
             color: #aaa;
             margin-top: 2px;
@@ -220,7 +219,7 @@
             color: #222;
         }
 
-        .fotografer-name {
+        .sesi-date {
             font-size: 11px;
             color: #aaa;
             margin-top: 2px;
@@ -243,15 +242,32 @@
         }
 
         .badge-confirmed {
-            background: #e8f5e2;
-            color: #2a7a1e;
-            border: 1px solid #c3e6b5;
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
         }
 
-        .badge-review {
-            background: #fff7e0;
-            color: #8a6200;
-            border: 1px solid #fce38a;
+        .badge-completed {
+            background: #111;
+            color: #fff;
+        }
+
+        .badge-editing {
+            background: #e0e7ff;
+            color: #3730a3;
+            border: 1px solid #a5b4fc;
+        }
+
+        .badge-done {
+            background: #d1fae5;
+            color: #166534;
+            border: 1px solid #6ee7b7;
+        }
+
+        .badge-rejected {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fca5a5;
         }
 
         /* Action buttons */
@@ -266,16 +282,7 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.12s;
-        }
-
-        .action-btn:hover.confirm {
-            border-color: #f5c518;
-            background: #fffbe6;
-        }
-
-        .action-btn:hover.reject {
-            border-color: #ff5555;
-            background: #fff0f0;
+            text-decoration: none;
         }
 
         .action-btn svg {
@@ -293,6 +300,24 @@
 
         .action-btn.menu svg {
             color: #999;
+        }
+
+        .action-btn:hover.confirm {
+            border-color: #f5c518;
+            background: #fffbe6;
+        }
+
+        .action-btn:hover.reject {
+            border-color: #ff5555;
+            background: #fff0f0;
+        }
+
+        /* Empty */
+        .table-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #ccc;
+            font-size: 12.5px;
         }
 
         /* ─── POSTINGAN CARD ──────────────────────── */
@@ -347,10 +372,8 @@
             width: 50px;
             height: 50px;
             border-radius: 8px;
-            background: #e8e8e6;
-            overflow: hidden;
-            flex-shrink: 0;
             object-fit: cover;
+            flex-shrink: 0;
         }
 
         .post-thumb-placeholder {
@@ -412,40 +435,11 @@
             color: #888;
         }
 
-        /* ─── FOOTER ──────────────────────────────── */
-        .dash-footer {
-            margin-top: 40px;
-            padding-top: 28px;
-            border-top: 1px solid #e8e8e6;
-            display: grid;
-            grid-template-columns: 1.4fr 1fr 1fr 1fr;
-            gap: 28px;
-        }
-
-        .footer-col-title {
-            font-size: 12.5px;
-            font-weight: 700;
-            color: #111;
-            margin-bottom: 10px;
-        }
-
-        .footer-col p {
-            font-size: 11.5px;
-            color: #999;
-            line-height: 1.6;
-        }
-
-        .footer-col a {
-            display: block;
+        .posts-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #ccc;
             font-size: 12px;
-            color: #666;
-            text-decoration: none;
-            margin-bottom: 6px;
-            transition: color 0.12s;
-        }
-
-        .footer-col a:hover {
-            color: #111;
         }
     </style>
 
@@ -457,12 +451,18 @@
             <div class="stat-card-icon">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-                        d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
             </div>
-            <span class="stat-badge green">+12.5%</span>
+
+            @if (!is_null($pendapatanPct))
+                <span class="stat-badge {{ $pendapatanPct >= 0 ? 'green' : 'red' }}">
+                    {{ $pendapatanPct >= 0 ? '+' : '' }}{{ $pendapatanPct }}%
+                </span>
+            @endif
+
             <div class="stat-label" style="margin-bottom:6px">Total Pendapatan</div>
-            <div class="stat-value sm">Rp {{ number_format($pendapatan ?? 84250000, 0, ',', '.') }}</div>
+            <div class="stat-value sm">Rp {{ number_format($pendapatan, 0, ',', '.') }}</div>
         </div>
 
         {{-- Pemesanan Aktif --}}
@@ -473,15 +473,14 @@
                         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
             </div>
-            <span class="stat-badge"
-                style="top:22px;right:22px;font-size:11px;font-weight:600;color:#1d8a45;position:absolute">
-                {{ $pemesananBaru ?? 8 }} Baru
-            </span>
+            @if ($pemesananBaru > 0)
+                <span class="stat-badge amber">{{ $pemesananBaru }} Baru</span>
+            @endif
             <div class="stat-label" style="margin-bottom:6px">Pemesanan Aktif</div>
-            <div class="stat-value">{{ $pemesananAktif ?? 142 }}</div>
+            <div class="stat-value">{{ $pemesananAktif }}</div>
         </div>
 
-        {{-- Postingan Gallery (dark) --}}
+        {{-- Postingan Gallery --}}
         <div class="stat-card dark">
             <div class="stat-card-icon">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -489,9 +488,9 @@
                         d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M14 8h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
             </div>
-            <span class="stat-badge dark-badge" style="position:absolute;top:22px;right:22px;">Update Terakhir</span>
+            <span class="stat-badge dark-badge" style="position:absolute;top:22px;right:22px;">Semua Postingan</span>
             <div class="stat-label" style="margin-bottom:6px">Postingan Gallery</div>
-            <div class="stat-value">{{ $totalPostingan ?? 24 }} Post</div>
+            <div class="stat-value">{{ $totalPostingan }} Post</div>
         </div>
 
     </div>
@@ -499,38 +498,14 @@
     {{-- ═══ BOTTOM GRID ═════════════════════════════════════════ --}}
     <div class="bottom-grid">
 
-        {{-- TABLE: Manajemen Pemesanan --}}
+        {{-- TABLE: Pemesanan Terbaru --}}
         <div class="table-card">
             <div class="card-header">
-                <h2>Manajemen Pemesanan</h2>
-                <a href="#">Lihat Semua →</a>
+                <h2>Pemesanan Terbaru</h2>
+                <a href="{{ route('admin.bookings.index') }}">Lihat Semua →</a>
             </div>
 
             @php
-                $pemesanan = $pemesananTerbaru ?? [
-                    [
-                        'nama' => 'Andini Sekar',
-                        'lokasi' => 'Jakarta Selatan',
-                        'sesi' => 'Pre-Wedding Gold',
-                        'fotografer' => 'Bramantya Putra',
-                        'status' => 'pending',
-                    ],
-                    [
-                        'nama' => 'Raka Fauzi',
-                        'lokasi' => 'Bandung',
-                        'sesi' => 'Potret Bisnis',
-                        'fotografer' => 'Citra Maharani',
-                        'status' => 'confirmed',
-                    ],
-                    [
-                        'nama' => 'Maya Lestari',
-                        'lokasi' => 'Yogyakarta',
-                        'sesi' => 'Family Studio',
-                        'fotografer' => 'Dimas Anggara',
-                        'status' => 'pending',
-                    ],
-                ];
-
                 $avatarPalette = ['#d4a8a0', '#a8b8d4', '#b4d4a8', '#d4c8a8', '#c4a8d4'];
             @endphp
 
@@ -538,86 +513,72 @@
                 <thead>
                     <tr>
                         <th>Klien</th>
-                        <th>Sesi &amp; Fotografer</th>
+                        <th>Paket &amp; Tanggal</th>
+                        <th>Total</th>
                         <th>Status</th>
-                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($pemesanan as $i => $p)
+                    @forelse ($pemesananTerbaru as $i => $bk)
                         @php
-                            $initials = collect(explode(' ', $p['nama']))
+                            $initials = collect(explode(' ', $bk->user->name ?? 'U'))
                                 ->map(fn($w) => strtoupper(substr($w, 0, 1)))
                                 ->take(2)
                                 ->join('');
-
-                            $badgeClass = match ($p['status']) {
+                            $bgColor = $avatarPalette[$i % count($avatarPalette)];
+                            $badgeClass = match ($bk->status) {
                                 'confirmed' => 'badge-confirmed',
-                                'review' => 'badge-review',
+                                'completed' => 'badge-completed',
+                                'editing' => 'badge-editing',
+                                'done' => 'badge-done',
+                                'rejected' => 'badge-rejected',
                                 default => 'badge-pending',
                             };
-                            $badgeLabel = match ($p['status']) {
+                            $badgeLabel = match ($bk->status) {
                                 'confirmed' => 'Confirmed',
-                                'review' => 'In Review',
+                                'completed' => 'Completed',
+                                'editing' => 'Editing',
+                                'done' => 'Done',
+                                'rejected' => 'Rejected',
                                 default => 'Pending',
                             };
-                            $bgColor = $avatarPalette[$i % count($avatarPalette)];
+
+                            $sameDay = $bk->start_date->toDateString() === $bk->end_date->toDateString();
                         @endphp
                         <tr>
-                            {{-- Klien --}}
                             <td>
                                 <div style="display:flex;align-items:center;gap:10px">
-                                    <div class="client-avatar" style="background:{{ $bgColor }};color:#fff;">
-                                        {{ $initials }}
+                                    <div class="client-avatar" style="background:{{ $bgColor }}">{{ $initials }}
                                     </div>
                                     <div>
-                                        <div class="client-name">{{ $p['nama'] }}</div>
-                                        <div class="client-loc">{{ $p['lokasi'] }}</div>
+                                        <div class="client-name">{{ $bk->user->name ?? '-' }}</div>
+                                        <div class="client-sub">{{ $bk->user->email ?? '' }}</div>
                                     </div>
                                 </div>
                             </td>
-
-                            {{-- Sesi --}}
                             <td>
-                                <div class="sesi-name">{{ $p['sesi'] }}</div>
-                                <div class="fotografer-name">{{ $p['fotografer'] }}</div>
+                                <div class="sesi-name">{{ $bk->package->name ?? '-' }}</div>
+                                <div class="sesi-date">
+                                    {{ $bk->start_date->format('d M Y, H:i') }}
+                                    @if (!$sameDay)
+                                        – {{ $bk->end_date->format('d M Y, H:i') }}
+                                    @else
+                                        – {{ $bk->end_date->format('H:i') }}
+                                    @endif
+                                </div>
                             </td>
-
-                            {{-- Status --}}
+                            <td style="font-size:13px;font-weight:700;color:#111;white-space:nowrap;">
+                                {{ $bk->formatted_total }}
+                            </td>
                             <td>
                                 <span class="badge {{ $badgeClass }}">{{ $badgeLabel }}</span>
                             </td>
-
-                            {{-- Aksi --}}
-                            <td>
-                                @if ($p['status'] === 'confirmed')
-                                    <button class="action-btn menu">
-                                        <svg viewBox="0 0 24 24" fill="currentColor">
-                                            <circle cx="5" cy="12" r="2" />
-                                            <circle cx="12" cy="12" r="2" />
-                                            <circle cx="19" cy="12" r="2" />
-                                        </svg>
-                                    </button>
-                                @else
-                                    <div style="display:flex;gap:5px">
-                                        <button class="action-btn confirm">
-                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                                stroke-width="2.5">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                                            </svg>
-                                        </button>
-                                        <button class="action-btn reject">
-                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                                stroke-width="2.5">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                @endif
-                            </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="4" class="table-empty">Belum ada pemesanan.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -629,37 +590,11 @@
                 <span class="posts-tab">Blog &amp; Gallery</span>
             </div>
 
-            @php
-                $posts = $postinganTerbaru ?? [
-                    [
-                        'judul' => 'Esensi Pernikahan Modern',
-                        'kategori' => 'Gallery',
-                        'waktu' => '2 Jam Lalu',
-                        'status' => 'published',
-                        'img' => null,
-                    ],
-                    [
-                        'judul' => 'Tips Fotografi Outdoor',
-                        'kategori' => 'Blog',
-                        'waktu' => 'Kemarin',
-                        'status' => 'published',
-                        'img' => null,
-                    ],
-                    [
-                        'judul' => 'Potret Studio Minimalis',
-                        'kategori' => 'Gallery',
-                        'waktu' => '3 Hari Lalu',
-                        'status' => 'draft',
-                        'img' => null,
-                    ],
-                ];
-            @endphp
-
-            @foreach ($posts as $post)
+            @forelse ($postinganTerbaru as $post)
                 <div class="post-item">
                     {{-- Thumbnail --}}
-                    @if (!empty($post['img']))
-                        <img src="{{ $post['img'] }}" class="post-thumb" alt="{{ $post['judul'] }}">
+                    @if ($post->image ?? null)
+                        <img src="{{ asset('storage/' . $post->image) }}" class="post-thumb" alt="{{ $post->title }}">
                     @else
                         <div class="post-thumb-placeholder">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -669,42 +604,24 @@
                         </div>
                     @endif
 
-                    {{-- Info --}}
                     <div class="post-info">
-                        <div class="post-title">{{ $post['judul'] }}</div>
-                        <div class="post-meta">{{ $post['waktu'] }} • {{ $post['kategori'] }}</div>
-                        <span class="post-badge {{ $post['status'] === 'published' ? 'published' : 'draft' }}">
-                            {{ $post['status'] === 'published' ? 'Published' : 'Draft' }}
+                        <div class="post-title">{{ $post->title }}</div>
+                        <div class="post-meta">
+                            {{ $post->created_at->diffForHumans() }}
+                            @if ($post->category ?? null)
+                                &bull; {{ $post->category }}
+                            @endif
+                        </div>
+                        <span class="post-badge {{ $post->is_published ?? false ? 'published' : 'draft' }}">
+                            {{ $post->is_published ?? false ? 'Published' : 'Draft' }}
                         </span>
                     </div>
                 </div>
-            @endforeach
+            @empty
+                <div class="posts-empty">Belum ada postingan.</div>
+            @endforelse
         </div>
 
-    </div>
-
-    {{-- ═══ FOOTER ══════════════════════════════════════════════ --}}
-    <div class="dash-footer">
-        <div class="footer-col">
-            <div class="footer-col-title">MomentHub</div>
-            <p>Platform kurasi fotografer profesional terpercaya untuk setiap momen berharga Anda.</p>
-        </div>
-        <div class="footer-col">
-            <div class="footer-col-title">Pintasan</div>
-            <a href="{{ route('admin.dashboard') }}">Dashboard Admin</a>
-            <a href="#">Kelola Postingan</a>
-            <a href="#">Laporan Pendapatan</a>
-        </div>
-        <div class="footer-col">
-            <div class="footer-col-title">Bantuan</div>
-            <a href="#">Pusat Bantuan</a>
-            <a href="#">Kontak Support</a>
-            <a href="#">Kebijakan Privasi</a>
-        </div>
-        <div class="footer-col">
-            <div class="footer-col-title">Copyright</div>
-            <p>© {{ date('Y') }} MomentHub. Hak Cipta Dilindungi.</p>
-        </div>
     </div>
 
 @endsection
